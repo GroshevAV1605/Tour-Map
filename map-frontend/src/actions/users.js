@@ -19,6 +19,8 @@ const registerRequest = (user) => ({
 });
 
 const register = user => {
+    console.log('user');
+    
     return dispatch => {
         dispatch(registerRequest(user));
 

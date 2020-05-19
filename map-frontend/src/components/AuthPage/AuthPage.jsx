@@ -100,7 +100,7 @@ const AuthPage = (props) => {
                             .oneOf([Yup.ref('password'), null], 'Пароли не совпадают!')
                             .required("Подтвердите пароль!")
                         })}
-                        onSubmit={(values, actions) => console.log(values)}
+                        onSubmit={(values, actions) => submitRegister(values)}
                         render={({errors, status, touched}) => (
                             <Form>
                                 <FormB.Group>
