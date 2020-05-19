@@ -4,7 +4,9 @@ import {Button, Popover, OverlayTrigger, Col, Form as FormB} from 'react-bootstr
 import styles from './AuthPage.module.css';
 import * as Yup from 'yup';
 import { connect } from 'react-redux';
-import register from '../../actions/users';
+import {register, auth, authStayOn} from '../../actions/users';
+import {ToastContainer, toast} from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 import {hasUpperCase, hasLowerCase, hasNmber} from '../../utils/validateFuntions'
 import { bindActionCreators } from 'redux';
@@ -37,6 +39,16 @@ const AuthPage = (props) => {
         props.actions.register(dataToFetch);
     }
 
+    const submitAuth = values => {
+        let dataToFetch = Object.assign({}, values);
+        console.log(dataToFetch);
+        authStayOn(dataToFetch.stayOn);
+        
+        props.actions.auth(dataToFetch)
+        
+
+    }
+
 
     const popover = (
         <Popover id="popover-basic">
@@ -45,6 +57,14 @@ const AuthPage = (props) => {
             </Popover.Content>
         </Popover>
     )
+        
+    if(props.success){
+        toast.success(props.success);
+    }
+
+    if(props.error){
+        toast.error(props.error);
+    }
 
     return (
         <div className={styles.auth_container}>
@@ -61,7 +81,7 @@ const AuthPage = (props) => {
                     {state.isAuth && (
                         <Formik
                             initialValues={initialValues.authData}
-                            onSubmit={(values) => console.log(values)}
+                            onSubmit={(values) => submitAuth(values)}
                             render= {({errors, status, touched, handleChange, values}) => (
                                 <Form>
                                     <FormB.Group>
@@ -139,19 +159,32 @@ const AuthPage = (props) => {
                     )}
                     
                 </div>
+                <ToastContainer
+                    position="bottom-center"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
             </div>
         </div>
     )
 }
 
-const mapStateToProps = state => {
-
-}
+const mapStateToProps = state => ({
+    error: state.alertReducer.error,
+    success: state.alertReducer.success,
+})
 
 const mapDispatchToProps = dispatch => ({
     actions: bindActionCreators({
-        register: register
-    }, dispatch)
+        register: register,
+        auth: auth
+    }, dispatch),
+    authStayOn: () => dispatch(authStayOn())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthPage);

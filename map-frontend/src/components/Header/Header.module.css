@@ -30,6 +30,7 @@
     text-decoration: none;
     margin-right: 30px;
     color: white;
+    cursor: pointer;
 }
 
 .header_link:hover{

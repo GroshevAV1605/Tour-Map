@@ -1,45 +1,57 @@
 import {REGISTER_FAILURE, REGISTER_SUCCESS, REGISTER_REQUEST} from '../constants/users';
+import {AUTH_SUCCESS, AUTH_STAYON, AUTH_LOGOUT} from '../constants/users';
 import {AlertClear, AlertError, AlertSuccess} from './alertActions';
 import axios from 'axios';
+import { history } from '../utils/history';
 
 
-const registerFailure = (error) => ({
-    type: REGISTER_FAILURE,
-    payload: error
-});
-
-const registerSuccess = (user) => ({
-    type: REGISTER_SUCCESS,
+export const authSuccess = (user) => ({
+    type: AUTH_SUCCESS,
     payload: user
-});
+})
 
-const registerRequest = (user) => ({
-    type: REGISTER_REQUEST,
-    payload: user
-});
+export const authStayOn = (stayOn) => ({
+    type: AUTH_STAYON,
+    payload: stayOn
+})
 
-const register = user => {
+export const authLogOut = () => ({
+    type: AUTH_LOGOUT
+})
+
+export const register = user => {
     console.log('user');
     
     return dispatch => {
-        dispatch(registerRequest(user));
-
-        axios.post("http://localhost:5000/users", JSON.stringify(user))
-            .then(user => {
-                console.log('Успешная регистрация');
-                console.log(user);
-                
-                dispatch(registerSuccess());
+        console.log(user);
+        
+        axios.post("http://localhost:5000/users", JSON.stringify(user), { headers: {'Content-Type': 'application/json'}})
+            .then(user => {             
                 dispatch(AlertSuccess("Вы успешно зарегистрировались"))
+                dispatch(AlertClear());
             })
             .catch(error => {
-                console.log('Ошибка в регистрации');
-                console.log(error);
-                
-                dispatch(registerFailure(error.toString()));
                 dispatch(AlertError(error.toString()));
+                dispatch(AlertClear());
             })
     }
 }
 
-export default register;
+export const auth = user => {
+    return dispatch => {
+        
+        axios.post("http://localhost:5000/users/auth", JSON.stringify(user), {headers:{'Content-Type':'application/json'}})
+            .then(retUser => {
+                console.log(retUser);
+                if(user.stayOn){
+                    localStorage.setItem('user', JSON.stringify(retUser.data.login));
+                }
+                dispatch(authSuccess(retUser.data.login))
+                history.push('/map');
+            })
+            .catch(error => {
+                dispatch(AlertError(error.toString()));
+                dispatch(AlertClear());
+            })
+    }
+}

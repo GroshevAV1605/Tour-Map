@@ -1,8 +1,15 @@
 import React from 'react';
 import {NavLink, Link} from 'react-router-dom';
 import styles from './Header.module.css';
+import {connect} from 'react-redux';
+import {authLogOut} from '../../actions/users';
+const Header = (props) => {
 
-const Header = () => {
+    const logOut = () => {
+        props.authLogOut();
+        localStorage.removeItem('user');
+    }
+
     return (
         <div className={styles.header}>
             <div className={styles.header_logo}>
@@ -10,12 +17,25 @@ const Header = () => {
             </div>     
             <div className={styles.header_right}>
                 <NavLink className={styles.header_link} to="/map" activeClassName={styles.active_header_link}>Карта</NavLink>
-                <NavLink className={styles.header_link} to='/personal' activeClassName={styles.active_header_link}>Места</NavLink>
-                <NavLink className={styles.header_link} to='/marker' activeClassName={styles.active_header_link}>Добавить метку</NavLink>
-                <NavLink className={styles.header_link} to="/auth" activeClassName={styles.active_header_link}>Войти</NavLink>
+                {!props.user ? (<NavLink className={styles.header_link} to="/auth" activeClassName={styles.active_header_link}>Войти</NavLink>) : (
+                    <React.Fragment>
+                        <NavLink className={styles.header_link} to='/marker' activeClassName={styles.active_header_link}>Добавить метку</NavLink>
+                        <NavLink className={styles.header_link} to='/personal' activeClassName={styles.active_header_link}>Личный кабинет</NavLink>
+                        <span className={styles.header_link} onClick={()=>logOut()} >Выйти</span>
+                    </React.Fragment>
+                    
+                )}
             </div>
         </div>
     )
 }
 
-export default Header;
+const mapStateToProps = store => ({
+    user: store.usersReducer.user
+})
+
+const mapDispatchToProps = dispatch => ({
+    authLogOut: () => dispatch(authLogOut())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

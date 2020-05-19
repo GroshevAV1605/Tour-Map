@@ -1,21 +1,32 @@
 import {ALERT_CLEAR, ALERT_ERROR, ALERT_SUCCESS} from '../constants/alert';
 
-const alertReducer = (state={}, action) => {
+const initialState = {
+    error: '',
+    success: ''
+}
+
+const alertReducer = (state=initialState, action) => {
     switch(action.type) {
         case ALERT_SUCCESS:
             return {
-                type: 'alert-success',
-                message: action.payload
+                ...state,
+                success: action.payload,
+                error: ''
             }
 
         case ALERT_ERROR:
             return {
-                type: 'alert-danger',
-                message: action.payload
+                ...state,
+                error: action.payload,
+                success: ''
             }
 
         case ALERT_CLEAR:
-            return {}
+            return {
+                ...state,
+                error: '',
+                success: ''
+            }
 
         default:
             return state

@@ -1,19 +1,25 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Header from './components/Header/Header';
-import {BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom';
-
+import {Router, Route, Switch, Redirect} from 'react-router-dom';
+import {history} from './utils/history';
 import styles from './App.module.css';
 import MapPage from './components/MapPage/MapPage';
 import AuthPage from './components/AuthPage/AuthPage';
 import PersonalArea from './components/PersonalArea/PersonalArea';
 import AddMarkerPage from './components/AddMarkerPage/AddMarkerPage';
-
-const App = () => {
+import {authStayOn, authSuccess} from './actions/users'
+import {connect} from 'react-redux';
+const App = (props) => {
   
-
+  useEffect(() => {
+    if(localStorage.getItem('user') !== null){
+      props.authSuccess(localStorage.getItem('user'));
+      props.authStayOn(true);
+    }
+  }, [])
 
   return (
-    <Router>
+    <Router history={history}>
       <div>
         <Header/>
       </div>
@@ -40,5 +46,14 @@ const App = () => {
 
 }
 
+const mapStateToProps = state => ({
+  user: state.usersReducer.user
+})
 
-export default App;
+const mapDispatchToProps = dispatch => ({
+  authStayOn: (stayOn) => dispatch(authStayOn(stayOn)),
+  authSuccess: (user) => dispatch(authSuccess(user))
+})
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
