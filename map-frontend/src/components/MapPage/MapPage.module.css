@@ -1,0 +1,21 @@
+.mainDiv {
+    min-height: 93vh;
+    display: flex;
+}
+
+/*.nav {
+    flex: 0 0 24vw;
+    max-width: 20%;
+}
+
+.content {
+    flex: 1;
+}*/
+
+.nav {
+    width: 20%;
+}
+
+.content {
+    width: 80%;
+}

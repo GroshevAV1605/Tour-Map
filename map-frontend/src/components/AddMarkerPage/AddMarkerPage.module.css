@@ -1,0 +1,14 @@
+.marker{
+    width: 1400px;
+    height: 900px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    padding: 30px 20px;
+}
+
+.marker_container{
+    min-height: 93vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

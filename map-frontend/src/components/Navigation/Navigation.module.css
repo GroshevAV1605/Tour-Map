@@ -1,0 +1,5 @@
+.navLinks {
+    display: flex;
+    padding-top: 15px;
+    flex-wrap: wrap;
+}

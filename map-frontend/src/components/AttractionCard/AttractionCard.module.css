@@ -1,0 +1,173 @@
+.card {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 5%;
+    bottom: 20%;
+    background-color: white;
+    left: 5%;
+    right: 5%;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  }
+  
+  .cardHeader {
+    display: flex;
+    justify-content: space-between;
+    flex: 0 0 75px;
+  }
+  
+  h2 {
+    font-size: 35px;
+    font-weight: lighter;
+    text-decoration: none;
+    color: #646262;
+    margin: auto 0 auto 15px;
+  }
+  
+  .cardButton {
+    border: none;
+    background-color: var(--color);
+    padding: 0 30px;
+    cursor: pointer;
+    height: 38px;
+  }
+  
+  .backButton {
+    border-top-left-radius: 10px;
+  }
+  
+  .backButton:focus {
+    outline: 0;
+  }
+  
+  .closeButton {
+    border-top-right-radius: 10px;
+  }
+  
+  .closeButton:focus {
+    outline: 0;
+  }
+  
+  .leftArrow {
+    transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+  }
+  
+  .backButton i {
+    border: solid black;
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 3px;
+  }
+  
+  .close {
+    position: absolute;
+    right: 21px;
+    top: 10px;
+    width: 18px;
+    height: 18px;
+  }
+  
+  .close:before,
+  .close:after {
+    position: absolute;
+    content: " ";
+    height: 18px;
+    width: 2px;
+    background-color: #333;
+  }
+  .close:before {
+    transform: rotate(45deg);
+  }
+  .close:after {
+    transform: rotate(-45deg);
+  }
+  
+  .cardContent {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  
+  .mediaContainer {
+    height: 80%;
+    overflow: hidden;
+  }
+  
+  .mediaContainer iframe {
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+    height: 100%;
+    width: 90%;
+  }
+  
+  .mediaContainer img {
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+    height: 100%;
+  }
+  
+  .mediaMenu {
+    flex-basis: 20%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  
+  .mediaMenu .imgPrevew {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  
+  .imageContainer:hover {
+    opacity: 0.7;
+  }
+  
+  .playIcon {
+    position: absolute;
+    top: 30%;
+    left: 35%;
+    opacity: 0.7;
+  }
+  
+  .imageContainer {
+    margin-bottom: 10px;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .description {
+    flex-basis: 75%;
+    overflow-y: scroll;
+    font-size: 15px;
+  }
+  
+  .description p {
+    text-indent: 20px;
+    margin-bottom: 5px;
+    margin-top: 0;
+    margin-right: 15px;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 4px;
+    background-color: #f5f5f5;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: #646262;
+    border-radius: 5px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background-color: #f5f5f5;
+    border-radius: 5px;
+  }
+  

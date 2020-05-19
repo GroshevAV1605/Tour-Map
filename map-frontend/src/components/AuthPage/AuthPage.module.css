@@ -1,0 +1,47 @@
+.auth{
+    width: 700px;
+    height: auto;
+    background-color: rgb(245, 245, 245);
+    border-radius: 15px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.auth_container{
+    min-height: 93vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth_header{
+    display: flex;
+    border-bottom: solid 2px rgb(207, 206, 206);
+}
+
+.auth_header_button{
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+    font-size: 20px;
+    cursor: pointer;
+    transition-duration: 0.3s;
+}
+
+.auth_header_button:hover{
+    background-color: rgb(207, 206, 206);
+}
+
+.auth_header_button:nth-child(1){
+    border-top-left-radius: 15px;
+}
+
+.auth_header_button:nth-child(2){
+
+    border-top-right-radius: 15px;
+}
+
+.auth_form{
+    padding: 20px 40px ;
+}
