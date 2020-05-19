@@ -22,6 +22,5 @@ app.use("/users", userRouter);
 
 app.listen(5000, ()=>{
     console.log('App listening on port 5000!');
-    console.log(typeof uuid.v4());
     
 })

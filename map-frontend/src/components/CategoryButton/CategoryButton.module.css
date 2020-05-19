@@ -1,9 +1,6 @@
 .category_btn {
     color: #494949;
-    flex-basis: 50%;
-    flex-grow: 0;
-    max-width: 50%;
-    padding: 25px 0 15px 0;
+    padding: 15px 0 15px 0;
     font-size: 20px;
     text-transform: uppercase;
     text-decoration: none;

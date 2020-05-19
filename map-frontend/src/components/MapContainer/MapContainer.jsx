@@ -27,7 +27,6 @@ const MapContainer = () => {
                     <ZoomControl/>
                 </Map>
             </YMaps>
-            <AttractionCard/>
         </div>
 
     )

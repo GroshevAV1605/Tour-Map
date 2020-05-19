@@ -1,13 +1,42 @@
 import React, {useState} from 'react';
-import { useFormik } from 'formik';
-import {Button, Form, Popover, OverlayTrigger, Col} from 'react-bootstrap';
+import { Formik, Field, Form, ErrorMessage } from 'formik';
+import {Button, Popover, OverlayTrigger, Col, Form as FormB} from 'react-bootstrap';
 import styles from './AuthPage.module.css';
+import * as Yup from 'yup';
+import { connect } from 'react-redux';
+import register from '../../actions/users';
 
-const AuthPage = () => {
+import {hasUpperCase, hasLowerCase, hasNmber} from '../../utils/validateFuntions'
+import { bindActionCreators } from 'redux';
+
+const AuthPage = (props) => {
 
     const [state, setState] = useState({
-        isAuth: true
+        isAuth: true,      
     })
+
+    const initialValues={
+        registrationData: {
+            login:"",
+            password:"",
+            password_rep:"",
+            username:"",
+            email:""
+        },
+        authData: {
+            login:"",
+            password: "",
+            stayOn: true
+        }
+    }
+
+    const submitRegister = values => {
+        let dataToFetch = Object.assign({}, values);
+        delete dataToFetch.password_rep;
+        
+        props.actions.register(dataToFetch);
+    }
+
 
     const popover = (
         <Popover id="popover-basic">
@@ -21,65 +50,108 @@ const AuthPage = () => {
         <div className={styles.auth_container}>
             <div className={styles.auth}>
                 <div className={styles.auth_header}>
-                    <div className={styles.auth_header_button} style={state.isAuth ? {backgroundColor:"rgb(207, 206, 206)"}: null} onClick={()=>setState({isAuth:true})}>
+                    <div className={styles.auth_header_button} style={state.isAuth ? {backgroundColor:"rgb(207, 206, 206)"}: null} onClick={()=>setState({...state, isAuth:true})}>
                         Войти
                     </div>
-                    <div className={styles.auth_header_button} style={!state.isAuth ? {backgroundColor:"rgb(207, 206, 206)"}:null} onClick={()=>setState({isAuth:false})}>
+                    <div className={styles.auth_header_button} style={!state.isAuth ? {backgroundColor:"rgb(207, 206, 206)"}:null} onClick={()=>setState({...state, isAuth:false})}>
                         Регистрация
                     </div>
                 </div>
                 <div className={styles.auth_form}>
-                    {state.isAuth && <Form>
-                        <Form.Group>
-                            <Form.Label>Логин</Form.Label>
-                            <Form.Control type="text" placeholder="Введите логин" />
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Label>Пароль</Form.Label>
-                            <Form.Control type="password" placeholder="Введите пароль" />
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Check type="checkbox" label="Оставаться в сети" />
-                        </Form.Group>
-                        <Button variant="success" type="submit">Войти</Button>
-                    </Form>}
-                    {!state.isAuth && <Form>
-                           
-                        <Form.Group >
-                            <Form.Label>Логин</Form.Label>
-                            <Form.Control type="text" placeholder="Введите уникальный логин" required />
-                            <Form.Control.Feedback type="invalid">Введите уникальный логин</Form.Control.Feedback>
-                        </Form.Group>
-                        
-                        <Form.Row>
-                            <OverlayTrigger  placement="right" overlay={popover}>
-                                <Form.Group as={Col}>
-                                    <Form.Label>Пароль</Form.Label>
-                                    <Form.Control type="text" placeholder="Введите пароль" required/>
-                                    <Form.Control.Feedback type="invalid">Введите корректный пароль</Form.Control.Feedback>
-                                </Form.Group>
-                            </OverlayTrigger>
-                            <Form.Group as={Col}>
-                                <Form.Label>Повторите пароль</Form.Label>
-                                <Form.Control type="text" placeholder="Повторно введите пароль" required/>
-                                <Form.Control.Feedback type="invalid">Введите корректный пароль</Form.Control.Feedback>
-                            </Form.Group>
-                        </Form.Row>
-                        <Form.Group>
-                            <Form.Label>Имя пользователя</Form.Label>
-                            <Form.Control type="text" placeholder="Введите ваше имя" required />
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Label>Email</Form.Label>
-                            <Form.Control type="email" placeholder="Адрес электронной почты" />
-                        </Form.Group>
-                        <Button variant="success" type="submit">Зарегистрироваться</Button>
-                    </Form>}
+                    {state.isAuth && (
+                        <Formik
+                            initialValues={initialValues.authData}
+                            onSubmit={(values) => console.log(values)}
+                            render= {({errors, status, touched, handleChange, values}) => (
+                                <Form>
+                                    <FormB.Group>
+                                        <FormB.Label>Логин</FormB.Label>
+                                        <Field type="text" placeholder="Введите логин" name='login' className="form-control" />
+                                    </FormB.Group>
+                                    <FormB.Group>
+                                        <FormB.Label>Пароль</FormB.Label>
+                                        <Field type="password" placeholder="Введите пароль" name='password' className="form-control" />
+                                    </FormB.Group>
+                                    <FormB.Group>
+                                        <FormB.Check
+                                            checked={values.stayOn}
+                                            name="stayOn"
+                                            type='checkbox'
+                                            label='Оставаться в сети'
+                                            onChange={handleChange}
+                                        />
+                                    </FormB.Group>
+                                    <Button variant='success' type='submit'>Войти</Button>
+                                </Form>
+                            )}
+                        />
+                    )}
 
+                    {!state.isAuth && (
+                        <Formik 
+                        initialValues={initialValues.registrationData}
+                        validationSchema={Yup.object().shape({
+                            login: Yup.string().required('Заполните поле логин!').min(8, "Короткий логин!"),
+                            email: Yup.string().email("Некорректный email!"),
+                            username: Yup.string().required('Введите имя!'),
+                            password: Yup.string().required('Введите пароль!')
+                            .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/, 'Пароль должен состоять не меньше чем из 8 символов, содержать цифры, строчные и заглавные латинские буквы'),
+                            password_rep: Yup.string()
+                            .oneOf([Yup.ref('password'), null], 'Пароли не совпадают!')
+                            .required("Подтвердите пароль!")
+                        })}
+                        onSubmit={(values, actions) => console.log(values)}
+                        render={({errors, status, touched}) => (
+                            <Form>
+                                <FormB.Group>
+                                    <FormB.Label>Логин<span style={{color: "red", fontSize:'14px', marginLeft:"3px"}}>*</span></FormB.Label>
+                                    <Field type="text" placeholder="Введите уникальный логин" name="login" className={'form-control' + (errors.login && touched.login ? ' is-invalid' : '')} />
+                                    <ErrorMessage name="login" component="div" className="invalid-feedback" />
+                                </FormB.Group>
+                                <FormB.Row>
+                                    <OverlayTrigger placement='bottom' overlay={popover}>
+                                        <FormB.Group as={Col}>
+                                            <FormB.Label>Пароль<span style={{color: "red", fontSize:'14px', marginLeft:"3px"}}>*</span></FormB.Label>
+                                            <Field type="password" placeholder="Введите пароль" name="password" className={'form-control' + (errors.password && touched.password ? ' is-invalid' : '')} />
+                                            <ErrorMessage name="password" component="div" className="invalid-feedback" />
+                                        </FormB.Group>
+                                    </OverlayTrigger>
+                                    <FormB.Group as={Col}>
+                                        <FormB.Label>Повторите пароль<span style={{color: "red", fontSize:'14px', marginLeft:"3px"}}>*</span></FormB.Label>
+                                        <Field type="password" placeholder="Повторно введите пароль" name="password_rep" className={'form-control' + (errors.password_rep && touched.password_rep ? ' is-invalid' : '')} />
+                                        <ErrorMessage name="password_rep" component="div" className="invalid-feedback" />
+                                    </FormB.Group>
+                                </FormB.Row>
+                                <FormB.Group>
+                                    <FormB.Label>Имя пользователя<span style={{color: "red", fontSize:'14px', marginLeft:"3px"}}>*</span></FormB.Label>
+                                    <Field type="text" placeholder="Введите ваше имя" name="username" className={'form-control' + (errors.username && touched.username ? ' is-invalid' : '')} />
+                                    <ErrorMessage name="username" component="div" className="invalid-feedback" />
+                                </FormB.Group>
+                                <FormB.Group>
+                                    <FormB.Label>Email<span style={{color: "red", fontSize:'14px', marginLeft:"3px"}}>*</span></FormB.Label>
+                                    <Field type="text" placeholder="Введите адрес электронной почты" name="email" className={'form-control' + (errors.email && touched.email ? ' is-invalid' : '')} />
+                                    <ErrorMessage name="email" component="div" className="invalid-feedback" />
+                                </FormB.Group>
+                                <Button variant="success" type="submit">Зарегистрироваться</Button>
+                            </Form>
+                        )}
+                    />
+                    )}
+                    
                 </div>
             </div>
         </div>
     )
 }
 
-export default AuthPage;
+const mapStateToProps = state => {
+
+}
+
+const mapDispatchToProps = dispatch => ({
+    actions: bindActionCreators({
+        register: register
+    }, dispatch)
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(AuthPage);

@@ -40,7 +40,7 @@ router.post("/auth", (req, res) => {
             else{
                 input_hash = crypto.pbkdf2Sync(body.password, auth_data.salt, 1000, 64, 'sha512').toString('hex');
                 if(input_hash === auth_data.password_hash){
-                    res.status(202).json("OK")
+                    res.status(202).json({cookie: "my_cookie"})
                 }
                 else{
                     res.status(402).json("Incorrect password")
