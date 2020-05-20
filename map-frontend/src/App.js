@@ -6,6 +6,7 @@ import styles from './App.module.css';
 import MapPage from './components/MapPage/MapPage';
 import AuthPage from './components/AuthPage/AuthPage';
 import PersonalArea from './components/PersonalArea/PersonalArea';
+import PrivatRoute from './components/PrivatRoute/PrivatRoute';
 import AddMarkerPage from './components/AddMarkerPage/AddMarkerPage';
 import {authStayOn, authSuccess} from './actions/users'
 import {connect} from 'react-redux';
@@ -33,12 +34,8 @@ const App = (props) => {
         <Route path="/auth">
           <AuthPage/>
         </Route>
-        <Route path="/personal">
-          <PersonalArea/>
-        </Route>
-        <Route path="/marker">
-          <AddMarkerPage/>
-        </Route>
+        <PrivatRoute path="/personal" Component={PersonalArea} />
+        <PrivatRoute path="/marker" Component={AddMarkerPage}/>
       </Switch>
     </Router>
     

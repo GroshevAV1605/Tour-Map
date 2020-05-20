@@ -148,7 +148,7 @@ const AuthPage = (props) => {
                                     <ErrorMessage name="username" component="div" className="invalid-feedback" />
                                 </FormB.Group>
                                 <FormB.Group>
-                                    <FormB.Label>Email<span style={{color: "red", fontSize:'14px', marginLeft:"3px"}}>*</span></FormB.Label>
+                                    <FormB.Label>Email</FormB.Label>
                                     <Field type="text" placeholder="Введите адрес электронной почты" name="email" className={'form-control' + (errors.email && touched.email ? ' is-invalid' : '')} />
                                     <ErrorMessage name="email" component="div" className="invalid-feedback" />
                                 </FormB.Group>

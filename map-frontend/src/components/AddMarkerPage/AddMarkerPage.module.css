@@ -12,3 +12,9 @@
     align-items: center;
     justify-content: center;
 }
+
+.circle:before{
+    content: '+';
+    font-size: 20px;
+    font-weight: bold;
+}
