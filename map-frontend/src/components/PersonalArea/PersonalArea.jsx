@@ -1,6 +1,7 @@
 import React from 'react';
 import {Container, Row, Col, Image, Button, ListGroup} from 'react-bootstrap';
 import Rating from 'react-rating';
+import { connect } from 'react-redux';
 
 import styles from './PersonalArea.module.css';
 import star_empty from "../../assets/star-empty.png";
@@ -10,6 +11,20 @@ import star_full from "../../assets/star-full.png";
 const PersonalArea = () => {
     return (
         <div className={styles.personal_container}>
+            <div className={styles.personal}>
+                <Container>
+                    <Row>
+                        <Col md={3}>
+                            <Image />
+                        </Col>
+                        <Col md={{span:8, offset: 1}}>
+
+                        </Col>
+                    </Row>
+                </Container>
+            </div>
+        </div>
+        /*<div className={styles.personal_container}>
             <div className={styles.personal}>
                 <Container>
                     <Row>
@@ -101,8 +116,16 @@ const PersonalArea = () => {
                     </Row>
                 </Container>
             </div>
-        </div>
+        </div>*/
     )
 }
 
-export default PersonalArea;
+const mapStateToProps = store => ({
+
+})
+
+const mapDispatchToProps = dispatch => ({
+
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(PersonalArea);
