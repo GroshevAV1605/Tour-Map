@@ -24,8 +24,8 @@ const fetchCategories = () => {
                 if(res.error){
                     throw(res.error);
                 }
-                dispatch(fetchCategoruiesSuccess(res.data))
-                return res.data;
+                let categories = res.data.map(cat => ({...cat, name: cat.name.trim()}))
+                dispatch(fetchCategoruiesSuccess(categories))
             })
             .catch(error => {
                 dispatch(fetchCategoriesError(error));

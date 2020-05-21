@@ -3,11 +3,14 @@ import {NavLink, Link} from 'react-router-dom';
 import styles from './Header.module.css';
 import {connect} from 'react-redux';
 import {authLogOut} from '../../actions/users';
+import {history} from '../../utils/history';
+
 const Header = (props) => {
 
     const logOut = () => {
         props.authLogOut();
         localStorage.removeItem('user');
+        history.push('/map');
     }
 
     return (

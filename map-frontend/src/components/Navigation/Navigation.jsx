@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import fetchCategories from '../../actions/categories';
-
 import styles from './Navigation.module.css';
 import CategoryButton from '../CategoryButton/CategoryButton';
 

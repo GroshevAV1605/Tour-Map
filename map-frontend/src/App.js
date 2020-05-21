@@ -9,6 +9,8 @@ import PersonalArea from './components/PersonalArea/PersonalArea';
 import PrivatRoute from './components/PrivatRoute/PrivatRoute';
 import AddMarkerPage from './components/AddMarkerPage/AddMarkerPage';
 import {authStayOn, authSuccess} from './actions/users'
+import {ToastContainer} from 'react-toastify'
+
 import {connect} from 'react-redux';
 const App = (props) => {
   
@@ -37,6 +39,16 @@ const App = (props) => {
         <PrivatRoute path="/personal" Component={PersonalArea} />
         <PrivatRoute path="/marker" Component={AddMarkerPage}/>
       </Switch>
+      <ToastContainer
+                                position="bottom-center"
+                                autoClose={5000}
+                                hideProgressBar={false}
+                                closeOnClick
+                                rtl={false}
+                                pauseOnFocusLoss
+                                draggable
+                                pauseOnHover
+                />
     </Router>
     
   )

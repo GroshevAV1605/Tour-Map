@@ -44,9 +44,9 @@ export const auth = user => {
             .then(retUser => {
                 console.log(retUser);
                 if(user.stayOn){
-                    localStorage.setItem('user', JSON.stringify(retUser.data.login));
+                    localStorage.setItem('user', JSON.stringify(retUser.data.id));
                 }
-                dispatch(authSuccess(retUser.data.login))
+                dispatch(authSuccess(retUser.data.id))
                 history.push('/map');
             })
             .catch(error => {

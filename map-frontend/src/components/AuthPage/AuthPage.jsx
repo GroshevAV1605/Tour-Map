@@ -5,7 +5,7 @@ import styles from './AuthPage.module.css';
 import * as Yup from 'yup';
 import { connect } from 'react-redux';
 import {register, auth, authStayOn} from '../../actions/users';
-import {ToastContainer, toast} from 'react-toastify'
+import {toast} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
 import {hasUpperCase, hasLowerCase, hasNmber} from '../../utils/validateFuntions'
@@ -159,16 +159,6 @@ const AuthPage = (props) => {
                     )}
                     
                 </div>
-                <ToastContainer
-                    position="bottom-center"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                />
             </div>
         </div>
     )
