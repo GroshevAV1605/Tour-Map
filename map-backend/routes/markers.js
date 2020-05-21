@@ -15,8 +15,20 @@ router.get("/:category", (req, res) => {
         .catch(err => res.status(400).json("Error: " + err))
 })
 
+router.get("/userMarkers/:id", (req, res) => {
+    let {id} = req.params;
+    console.log(req.params);
+    
+    db.any("SELECT * FROM marker WHERE creator_id=$1", id)
+        .then(data => {
+            res.json(data);
+            console.log(data);         
+        })
+        .catch(err => res.status(400).json("Error: " + err))
+})
+
 router.get("/", (req, res) => {
-    db.any("SELECT * FROM markers")
+    db.any("SELECT * FROM marker")
         .then(data => res.json(data))
         .catch(err => res.status(400).json("Error: " + err))
 })
@@ -66,5 +78,3 @@ router.post("/", (req, res) => {
 })
 
 module.exports = router;
-
-//process.env.PUBLIC_URL

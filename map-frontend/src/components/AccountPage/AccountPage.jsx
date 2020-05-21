@@ -1,28 +1,57 @@
-import React from 'react';
-import {Container, Row, Col, Image, Button, ListGroup} from 'react-bootstrap';
+import React, {useEffect} from 'react';
+import {Container, Row, Col, Image, Button, ListGroup, Modal} from 'react-bootstrap';
 import Rating from 'react-rating';
 import { connect } from 'react-redux';
-
-import styles from './PersonalArea.module.css';
+import {fetchUserMarkers} from '../../actions/markers';
+import styles from './AccountPage.module.css';
 import star_empty from "../../assets/star-empty.png";
 import star_full from "../../assets/star-full.png";
 
 
-const PersonalArea = () => {
+const AccountPage = (props) => {
+    
+    useEffect(()=>{
+        props.fetchUserMarkers(props.user.id);
+    },[])
+        
     return (
         <div className={styles.personal_container}>
             <div className={styles.personal}>
                 <Container>
                     <Row>
                         <Col md={3}>
-                            <Image />
+                            <Image style={{marginBottom: "30px"}} fluid rounded src={props.user.photo ? props.user.photo : (process.env.PUBLIC_URL + '/userpick_placeholder.png')}/>
+                            <Button variant="success" block>Сменить аватар</Button>
+                            <Button variant="success" block>Сменить пароль</Button>
+                            <Button variant="success" block>Сменить имя</Button>
                         </Col>
                         <Col md={{span:8, offset: 1}}>
-
+                            <h1 className={styles.places_container}>{props.user.name}</h1>
+                            <div className={styles.places_container}>
+                                <h3>Метки пользователя:</h3>
+                                <ListGroup variant="flush">
+                                    {props.userMarkers.map((marker, i) => (
+                                        <ListGroup.Item key={marker.id}>
+                                            <Row>
+                                                <Col md={8}>
+                                                    <a href="#">{i+1}. {marker.title}</a>
+                                                </Col>
+                                                <Col md={2}>
+                                                    <Button block variant="secondary">Edit</Button>
+                                                </Col>
+                                                <Col md={2}>
+                                                    <Button block variant="danger">X</Button>
+                                                </Col>
+                                            </Row>
+                                        </ListGroup.Item>
+                                    ))}
+                                </ListGroup>
+                            </div>
                         </Col>
                     </Row>
                 </Container>
             </div>
+
         </div>
         /*<div className={styles.personal_container}>
             <div className={styles.personal}>
@@ -121,11 +150,13 @@ const PersonalArea = () => {
 }
 
 const mapStateToProps = store => ({
-
+    user: store.usersReducer.user,
+    isAuthTryComplete: store.usersReducer.isAuthTryComplete,
+    userMarkers: store.markersReducer.userMarkers,
 })
 
 const mapDispatchToProps = dispatch => ({
-
+    fetchUserMarkers: (id) => dispatch(fetchUserMarkers(id))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(PersonalArea);
+export default connect(mapStateToProps, mapDispatchToProps)(AccountPage);

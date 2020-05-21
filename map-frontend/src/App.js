@@ -5,23 +5,33 @@ import {history} from './utils/history';
 import styles from './App.module.css';
 import MapPage from './components/MapPage/MapPage';
 import AuthPage from './components/AuthPage/AuthPage';
-import PersonalArea from './components/PersonalArea/PersonalArea';
+import AccountPage from './components/AccountPage/AccountPage'
 import PrivatRoute from './components/PrivatRoute/PrivatRoute';
 import AddMarkerPage from './components/AddMarkerPage/AddMarkerPage';
-import {authStayOn, authSuccess} from './actions/users'
+import {authStayOn, getById, authLogOut} from './actions/users'
 import {ToastContainer} from 'react-toastify'
 
 import {connect} from 'react-redux';
 const App = (props) => {
   
   useEffect(() => {
+    console.log(props.isAuthTryComplete);
+    
     if(localStorage.getItem('user') !== null){
-      props.authSuccess(localStorage.getItem('user'));
-      props.authStayOn(true);
+      if(props.getById(localStorage.getItem('user'))){
+        props.authStayOn(true);
+      }
+      else{
+        authLogOut();
+      }
+      
     }
   }, [])
 
+  console.log("fromAPp: "+props.isAuthTryComplete);
+  
   return (
+    props.isAuthTryComplete &&(
     <Router history={history}>
       <div>
         <Header/>
@@ -36,32 +46,35 @@ const App = (props) => {
         <Route path="/auth">
           <AuthPage/>
         </Route>
-        <PrivatRoute path="/personal" Component={PersonalArea} />
+        <PrivatRoute path="/personal" Component={AccountPage} />
         <PrivatRoute path="/marker" Component={AddMarkerPage}/>
       </Switch>
       <ToastContainer
-                                position="bottom-center"
-                                autoClose={5000}
-                                hideProgressBar={false}
-                                closeOnClick
-                                rtl={false}
-                                pauseOnFocusLoss
-                                draggable
-                                pauseOnHover
-                />
-    </Router>
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+    </Router>)
     
   )
 
 }
 
 const mapStateToProps = state => ({
-  user: state.usersReducer.user
+  user: state.usersReducer.user,
+  isAuthTryComplete: state.usersReducer.isAuthTryComplete
 })
 
 const mapDispatchToProps = dispatch => ({
   authStayOn: (stayOn) => dispatch(authStayOn(stayOn)),
-  authSuccess: (user) => dispatch(authSuccess(user))
+  getById: (id) => dispatch(getById(id)),
+  authLogOut: () => dispatch(authLogOut())
+
 })
 
 

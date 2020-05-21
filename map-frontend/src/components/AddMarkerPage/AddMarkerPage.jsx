@@ -102,7 +102,7 @@ const AddMarkerPage = (props) => {
         formData.append('category_id', values.category_id);
         formData.append('description', values.description);
         formData.append('description_en', values.description_en);
-        formData.append('creator_id', props.user)
+        formData.append('creator_id', props.user.id)
         
         
         

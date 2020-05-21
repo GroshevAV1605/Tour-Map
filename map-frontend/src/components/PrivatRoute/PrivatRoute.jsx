@@ -1,8 +1,8 @@
 import React from 'react';
 import {Redirect, Route} from 'react-router-dom';
-import {connect} from 'react-redux';
 
-const PrivatRoute = ({Component, user, ...rest}) => {
+const PrivatRoute = ({Component, ...rest}) => {
+    let user = localStorage.getItem('user');
     const isLoggedIn = !!user;
     return (
         <Route
@@ -18,8 +18,6 @@ const PrivatRoute = ({Component, user, ...rest}) => {
     )
 }
 
-const mapStateToProps = store => ({
-    user: store.usersReducer.user
-})
 
-export default connect(mapStateToProps)(PrivatRoute);
+
+export default PrivatRoute;

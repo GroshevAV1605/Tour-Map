@@ -44,12 +44,27 @@ router.post("/auth", (req, res) => {
                 
                 input_hash = crypto.pbkdf2Sync(body.password, auth_data.salt, 1000, 64, 'sha512').toString('hex');
                 if(input_hash === auth_data.password_hash){
-                    res.status(202).json({id: auth_data.id})
+                    res.status(202).json({id: auth_data.id, photo: auth_data.photo, name:auth_data.name, reg_date:auth_data.reg_date})
                 }
                 else{
                     res.status(402).json("Incorrect password")
                 }
             }
+        })
+})
+
+router.get("/getById/:id", (req, res) => {
+    let {id} = req.params;
+    id = id.replace(/"/g, "");
+    
+    db.one('SELECT * FROM map_user WHERE id = $1', id)
+        .then(data => {
+            res.json({id: data.id, photo: data.photo, name: data.name, reg_date: data.reg_date})
+            return true;
+        })
+        .catch(err => {
+            res.status(400).json("Error:" + err);
+            return false;
         })
 })
 
