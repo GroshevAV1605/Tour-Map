@@ -5,7 +5,57 @@ import Rating from 'react-rating';
 import star_empty from "../../assets/star-empty.png";
 import star_full from "../../assets/star-full.png";
 
-const AttractionCard = () => {
+const AttractionCard = ({marker, changeMarker}) => {
+  const [media, mediaChange] = useState({type:"", url:""});
+  console.log(marker);
+  
+  return(
+    <div className={styles.card} style={{"--color":marker.color}}>
+      <div className = {styles.cardHeader}>
+        {media.url ? (
+          <button className={`${styles.backButton} ${styles.cardButton}`} onClick={() => mediaChange({ type: "", url: "" })} className={styles.leftArrow}><i></i>Назад</button>
+        ):(
+        <h2>{marker.title}</h2>
+        )}
+        <button className={`${styles.closeButton} ${styles.cardButton}`} onClick = {() => changeMarker({marker:"", showCard:false})}>
+          <a className={styles.close}></a>
+        </button>
+      </div>
+      <CardContent
+        media={media}
+        marker={marker}
+        mediaChange={mediaChange}
+      />
+    </div>
+  )
+}
+
+const CardContent = ({media, marker, mediaChange}) => {
+  return media.url ? (
+    <div className={styles.mediaContainer}>
+      <img src={media.url}></img>
+    </div>
+  ):(
+    <div className={styles.CardContent}>
+      <div className={styles.mediaMenu}>
+        {marker.images.map((img, i) => (
+          <div className={styles.imageContainer}
+            onClick={() => mediaChange({type:"img", url:img})} key={i}>
+              <img className={styles.imgPrevew} src={img}/>
+            </div>
+        ))}
+      </div>
+      <div className={styles.description}>
+          {marker.description.split("\\n").map((par, i) => (
+            <p key={i}>{par}</p>
+          ))}
+      </div>
+    </div>
+  )
+}
+
+/*const AttractionCard = ({marker, changeMarker}) => {
+  const [media, mediaChange] = useState({type:"", url:""});
 
   return (
     <div className={styles.card} style={{ "--color": "#01d4cd" }}>
@@ -140,6 +190,6 @@ const CardContent = () => {
       </div>
     </div>
   );
-};
+};*/
 
 export default AttractionCard;

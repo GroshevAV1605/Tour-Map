@@ -78,17 +78,13 @@ const MapContainer = (props) => {
                     ))}
                 </Map>
             </YMaps>
-            <CSSTransition
-              in={markerData.showCard}
-              timeout={400}
-              unmountOnExit
-              classNames="cardTransition"
-            >
+            {markerData.showCard &&(
               <AttractionCard
                 marker={markerData.marker}
                 changeMarker = {changeMarker}
               />
-            </CSSTransition>
+            )}
+              
         </div>
 
     )

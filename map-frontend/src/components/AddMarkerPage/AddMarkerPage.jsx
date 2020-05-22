@@ -38,7 +38,7 @@ const AddMarkerPage = (props) => {
     }
 
     useEffect(() => {
-        props.actions.fetchCategories();
+        props.fetchCategories();
     }, [])
 
     const mapOnChange = (event, setFieldValue) => {
@@ -193,10 +193,10 @@ const AddMarkerPage = (props) => {
                                 </Col>
                             </Form.Row>
                             <Row style={{marginTop:"20px"}}>
-                                <Col md={1}>
+                                <Col md={2}>
                                     <Form.Label>Изображения:</Form.Label>
                                 </Col>
-                                <Col md={5}>
+                                <Col md={6}>
                                     {state.files.map((file, i) => (
                                         <Row key={i} style={{marginBottom:"10px"}}>
                                             <Col md={10}>
@@ -209,13 +209,13 @@ const AddMarkerPage = (props) => {
                                     ))}
                                     <Button onClick={()=>{setState(oldState => ({...oldState, files:[...oldState.files, {file:"", name:""}]}))}}>+</Button>
                                 </Col>
-                                <Col md={1}>
+                                {/*<Col md={1}>
                                     <Form.Label>Видео:</Form.Label>
                                 </Col>
                                 <Col md={5}>
                                     <Form.Control style={{marginBottom:"5px"}} type="text" value="https://youtu.be/B5-UWDnvKRo" />
                                     <Button variant="secondary"> + </Button>
-                                </Col>
+                                    </Col>*/}
                             </Row>
                             <Button variant="success" type="submit">СОЗДАТЬ</Button>
                             
