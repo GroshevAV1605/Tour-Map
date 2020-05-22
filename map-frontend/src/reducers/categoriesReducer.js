@@ -15,6 +15,7 @@ const categoriesReducer = (state=initialState, action) => {
             }
 
         case FETCH_CATEGORIES_SUCCESS:
+            
             return{
                 ...state,
                 pending: false,

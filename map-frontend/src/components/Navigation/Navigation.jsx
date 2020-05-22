@@ -1,19 +1,17 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import fetchCategories from '../../actions/categories';
+import {fetchCategories} from '../../actions/categories';
 import styles from './Navigation.module.css';
 import CategoryButton from '../CategoryButton/CategoryButton';
 
 const Navigation = (props) => {
 
     useEffect(() => {
-        props.actions.fetchCategories();
+        props.fetchCategories();
     }, [])
 
-
-    const {categories, pending, error} = props;
-        
+    const {categories} = props;
+    
     return (
         <div className={styles.navLinks}>
             {categories.map((category, i) => (
@@ -26,16 +24,12 @@ const Navigation = (props) => {
     )
 }
 
-const mapStateToProps = state => ({
-    error: state.categoriesReducer.error,
-    categories: state.categoriesReducer.categories,
-    pending: state.categoriesReducer.pending
+const mapStateToProps = store => ({
+    categories: store.categoriesReducer.categories,
 })
 
 const mapDispatchToProps = dispatch => ({
-    actions: bindActionCreators({
-        fetchCategories: fetchCategories
-    }, dispatch)
+    fetchCategories: () => dispatch(fetchCategories())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Navigation);

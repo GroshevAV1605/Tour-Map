@@ -8,7 +8,6 @@ import {register, auth, authStayOn} from '../../actions/users';
 import {toast} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
-import {hasUpperCase, hasLowerCase, hasNmber} from '../../utils/validateFuntions'
 import { bindActionCreators } from 'redux';
 
 const AuthPage = (props) => {

@@ -7,7 +7,7 @@ const fetchCategoriesPending = () => ({
 
 const fetchCategoruiesSuccess = (categories) => ({
     type: FETCH_CATEGORIES_SUCCESS,
-    payload: categories
+    payload: categories    
 });
 
 const fetchCategoriesError = (error) => ({
@@ -15,7 +15,8 @@ const fetchCategoriesError = (error) => ({
     payload: error
 });
 
-const fetchCategories = () => {
+export const fetchCategories = () => {
+    
     return dispatch => {
         dispatch(fetchCategoriesPending());
         axios.get("http://localhost:5000/categories")
@@ -33,4 +34,3 @@ const fetchCategories = () => {
     }
 }
 
-export default fetchCategories;

@@ -1,10 +1,48 @@
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { YMaps, Map, ZoomControl, Placemark } from "react-yandex-maps";
-
-import styles from './MapContainer.module.css';
+import {CSSTransition} from 'react-transition-group';
 import AttractionCard from '../AttractionCard/AttractionCard';
+import {fetchMapMarkers} from '../../actions/markers';
 import { connect } from 'react-redux';
-const MapContainer = () => {
+
+
+const MapContainer = (props) => {
+
+  let mapEl = useRef(null);
+
+  const [markerData, changeMarker] = useState({
+    marker: "",
+    showCard: false
+  });
+
+  useEffect(() => {
+    props.fetchMapMarkers();
+  }, [])
+
+  let {markers} =props;
+
+  markers = markers.map(marker => {
+    let markerCat = props.categories.find(cat => cat.id === marker.category_id);
+    return({
+      ...marker,
+      preset: markerCat.preset,
+      color: markerCat.color
+    })
+  })  
+  
+  const onMarkerClick = marker => {
+    changeMarker({
+      marker,
+      showCard: true
+    })
+    
+    mapEl.current.setCenter(
+      [parseFloat(marker.latitude) + 0.007, parseFloat(marker.longitude)],
+      15,
+      {duration: 500, checkZoomRange: true}
+    );
+  };
+  
     return (
         <div style={{ position: "relative", width: "100%", height: "100%" }}>
             <YMaps style={{position: "absolute"}}>
@@ -23,17 +61,46 @@ const MapContainer = () => {
                       ],
                       suppressMapOpenBlock: true
                     }}
+                    instanceRef={mapEl}
                 >
-                    <ZoomControl/>
+                  <ZoomControl/>
+                  {markers.map(marker => (
+                    <Placemark
+                      key = {marker.id}
+                      defaultGeometry={[marker.latitude, marker.longitude]}
+                      properties={{hintContent: marker.title}}
+                      options={{
+                        preset: marker.preset,
+                        iconColor: marker.color
+                      }}
+                      onClick={() => onMarkerClick(marker)}
+                    />
+                    ))}
                 </Map>
             </YMaps>
+            <CSSTransition
+              in={markerData.showCard}
+              timeout={400}
+              unmountOnExit
+              classNames="cardTransition"
+            >
+              <AttractionCard
+                marker={markerData.marker}
+                changeMarker = {changeMarker}
+              />
+            </CSSTransition>
         </div>
 
     )
 }
 
 const mapStateToProps = store => ({
-  markers: store.markersReducer.markers
+  markers: store.markersReducer.markers,
+  categories: store.categoriesReducer.categories
 })
 
-export default connect(mapStateToProps)(MapContainer);
+const mapDispatchToProps = dispatch => ({
+  fetchMapMarkers: () => dispatch(fetchMapMarkers())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(MapContainer);

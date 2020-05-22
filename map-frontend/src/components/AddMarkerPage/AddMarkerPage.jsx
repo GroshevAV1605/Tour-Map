@@ -1,15 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {Form, Col, Row, Button} from 'react-bootstrap';
-import { YMaps, Map, ZoomControl, Placemark, ObjectManager } from "react-yandex-maps";
+import { YMaps, Map, ZoomControl } from "react-yandex-maps";
 import { connect } from 'react-redux';
-import fetchCategories from '../../actions/categories';
+import {fetchCategories} from '../../actions/categories';
 import {toast} from 'react-toastify'
 import axios from 'axios';
 import { history } from '../../utils/history';
 
 import styles from './AddMarkerPage.module.css';
-import { bindActionCreators } from 'redux';
-import {Formik, Field, Form as FormikForm, ErrorMessage} from 'formik'
+import {Formik, Field, Form as FormikForm} from 'formik'
 
 const allowedFormats = ["image/png", "image/jpeg", "image/jpg", "image/svg+xml"]
 
@@ -234,9 +233,7 @@ const mapStateToProps = store => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-    actions: bindActionCreators({
-        fetchCategories: fetchCategories
-    }, dispatch)
+    fetchCategories: () => dispatch(fetchCategories())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddMarkerPage);

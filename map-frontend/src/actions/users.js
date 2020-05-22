@@ -72,7 +72,7 @@ export const auth = user => {
                 history.push('/map');
             })
             .catch(error => {
-                if (error.response.status == 402){
+                if (error.response.status === 402){
                     dispatch(AlertError("Неверный логин или пароль"));
                 }
                 else{
@@ -88,7 +88,6 @@ export const getById = id => {
     return dispatch => {
         axios.get("http://localhost:5000/users/getById/" + id)
             .then(res => {
-                let user = res.data;
                 dispatch(authSuccess(res.data));
             })
             .catch(err => {

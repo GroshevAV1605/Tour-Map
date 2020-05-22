@@ -2,7 +2,6 @@ import React, {useEffect} from 'react';
 import Header from './components/Header/Header';
 import {Router, Route, Switch, Redirect} from 'react-router-dom';
 import {history} from './utils/history';
-import styles from './App.module.css';
 import MapPage from './components/MapPage/MapPage';
 import AuthPage from './components/AuthPage/AuthPage';
 import AccountPage from './components/AccountPage/AccountPage'

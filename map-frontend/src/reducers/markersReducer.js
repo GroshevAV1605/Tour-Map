@@ -23,7 +23,7 @@ const markersReducer = (state=initialState, action) => {
                 ...state,
                 pending: false
             }
-        case FETCH_MARKERS_SUCCESS:
+        case FETCH_MARKERS_SUCCESS:            
             return{
                 ...state,
                 pending:false,

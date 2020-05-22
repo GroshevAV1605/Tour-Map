@@ -1,5 +1,5 @@
 import React from 'react';
-import {NavLink, Link} from 'react-router-dom';
+import {NavLink} from 'react-router-dom';
 import styles from './Header.module.css';
 import {connect} from 'react-redux';
 import {authLogOut} from '../../actions/users';

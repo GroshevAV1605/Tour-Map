@@ -9,8 +9,8 @@ import {
 
 export const fetchUserMarkersSuccess = userMarkers => ({
     type: FETCH_USER_MARKERS_SUCCESS,
-    payload: userMarkers
-})
+    payload: userMarkers 
+})   
 
 export const fetchMarkersSuccess = markers => ({
     type: FETCH_MARKERS_SUCCESS,
@@ -26,6 +26,7 @@ export const fetchMarkersError = () => ({
 })
 
 export const fetchUserMarkers = userId => {
+    
     return dispatch => {
         dispatch(fetchMarkersPending());
         axios.get("http://localhost:5000/markers/userMarkers/" + userId)
@@ -36,5 +37,18 @@ export const fetchUserMarkers = userId => {
             .catch(err => {
                 dispatch(fetchMarkersError());
             })
+    }
+}
+
+export const fetchMapMarkers = () => {
+    
+    return dispatch => {
+        dispatch(fetchMarkersPending());
+        axios.get('http://localhost:5000/markers')
+            .then(res => {
+                console.log(res);
+                dispatch(fetchMarkersSuccess(res.data));
+            })
+            .catch(err => dispatch(fetchMarkersError()));
     }
 }
