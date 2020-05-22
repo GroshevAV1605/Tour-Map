@@ -1,11 +1,74 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./AttractionCard.module.css";
-import {Row, Col, Container, Form, Button, Image} from 'react-bootstrap';
+import {Row, Col, Container, Form, Button, Image, Tab, ListGroup} from 'react-bootstrap';
 import Rating from 'react-rating';
 import star_empty from "../../assets/star-empty.png";
 import star_full from "../../assets/star-full.png";
+import { useParams } from "react-router-dom";
+import { connect } from "react-redux";
+import {history} from '../../utils/history';
 
-const AttractionCard = ({marker, changeMarker}) => {
+const AttractionCard = (props) => {
+  let [isDescr, setIsDescr] = useState(true);
+  let {markerId} = useParams();
+  let marker = props.markers.find(mrkr => mrkr.id===markerId);
+  console.log(props.markers);
+  
+  return (
+      <Container className={styles.card} style={{"--color":marker.color.trim(), padding:"0px"}}>
+        <div className={styles.cardHeader}>
+            <h2 style={{color: '#646262', marginTop:"15px", marginLeft:"20px", fontSize:"35px"}}>{marker.title}</h2>
+            <button className={`${styles.closeButton} ${styles.cardButton}`} onClick = {() => history.push("/map")}>
+              <a className={styles.close}></a>
+            </button>
+        </div>
+        <div className={styles.auth_header}>
+          <div className={styles.auth_header_button} style={isDescr ? {backgroundColor:"rgb(240, 238, 238)"}: null} onClick={()=>setIsDescr(true)}>
+            Описание
+          </div>
+          <div className={styles.auth_header_button} style={!isDescr ? {backgroundColor:"rgb(240, 238, 238)"}:null} onClick={()=>setIsDescr(false)}>
+            Отзывы
+          </div>
+        </div>
+        {isDescr ? (
+          <DescriptionTab marker={marker}/>
+        ):(
+          <RatingTab marker={marker}/>
+        )}
+      </Container>
+  )
+}
+
+const DescriptionTab = props => {
+  return(
+    <Row style={{overflow:"hidden"}}>
+        <Col md={4} style={{overflowY:'scroll', position:"absolute", top:"135px", bottom:"10px", left:"0"}}>
+          {props.marker.images.map((image, i) => (
+            <Image fluid rounded src={image} style={{marginTop:"10px", cursor:"pointer"}}/>
+          ))}
+          <Image fluid rounded src='https://bipbap.ru/wp-content/uploads/2017/10/0_8eb56_842bba74_XL-640x400.jpg' style={{marginTop:"10px", cursor:"pointer"}}/>
+          <Image fluid rounded src='https://bipbap.ru/wp-content/uploads/2017/10/0_8eb56_842bba74_XL-640x400.jpg' style={{marginTop:"10px", cursor:"pointer"}}/>
+          <Image fluid rounded src='https://bipbap.ru/wp-content/uploads/2017/10/0_8eb56_842bba74_XL-640x400.jpg' style={{marginTop:"10px", cursor:"pointer"}}/>
+          <Image fluid rounded src='https://bipbap.ru/wp-content/uploads/2017/10/0_8eb56_842bba74_XL-640x400.jpg' style={{marginTop:"10px", cursor:"pointer"}}/>
+        </Col>
+        <Col md={8} style={{overflowY:'scroll', position:"absolute", top:"135px", bottom:"10px", right:"0"}}>
+          {props.marker.description.split("\\n").map((par, i) => (
+            <p key={i}>{par}</p>
+          ))}
+        </Col>
+      </Row>
+  )
+}
+
+const RatingTab = props => {
+  return(
+    <p>RatingTab</p>
+  )
+}
+
+export default AttractionCard;
+
+/*const AttractionCard = ({marker, changeMarker}) => {
   const [media, mediaChange] = useState({type:"", url:""});
   console.log(marker);
   
@@ -52,7 +115,7 @@ const CardContent = ({media, marker, mediaChange}) => {
       </div>
     </div>
   )
-}
+}/*
 
 /*const AttractionCard = ({marker, changeMarker}) => {
   const [media, mediaChange] = useState({type:"", url:""});
@@ -191,5 +254,3 @@ const CardContent = () => {
     </div>
   );
 };*/
-
-export default AttractionCard;

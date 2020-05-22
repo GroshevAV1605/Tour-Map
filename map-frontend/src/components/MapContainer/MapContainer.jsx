@@ -1,28 +1,20 @@
 import React, {useEffect, useRef, useState} from 'react';
 import { YMaps, Map, ZoomControl, Placemark } from "react-yandex-maps";
-import {CSSTransition} from 'react-transition-group';
 import AttractionCard from '../AttractionCard/AttractionCard';
 import {fetchMapMarkers} from '../../actions/markers';
 import { connect } from 'react-redux';
+import {history} from '../../utils/history';
+import { Route } from 'react-router-dom';
 
 
 const MapContainer = (props) => {
 
   let mapEl = useRef(null);
 
-  const [markerData, changeMarker] = useState({
-    marker: "",
-    showCard: false
-  });
-
-  useEffect(() => {
-    props.fetchMapMarkers();
-  }, [])
-
-  let {markers} =props;
+  let {markers, categories} =props;
 
   markers = markers.map(marker => {
-    let markerCat = props.categories.find(cat => cat.id === marker.category_id);
+    let markerCat = categories.find(cat => cat.id === marker.category_id);
     return({
       ...marker,
       preset: markerCat.preset,
@@ -31,10 +23,7 @@ const MapContainer = (props) => {
   })  
   
   const onMarkerClick = marker => {
-    changeMarker({
-      marker,
-      showCard: true
-    })
+    history.push(`/map/${marker.id}`);
     
     mapEl.current.setCenter(
       [parseFloat(marker.latitude) + 0.007, parseFloat(marker.longitude)],
@@ -45,7 +34,7 @@ const MapContainer = (props) => {
   
     return (
         <div style={{ position: "relative", width: "100%", height: "100%" }}>
-            <YMaps style={{position: "absolute"}}>
+            <YMaps >
                 <Map
                     width={"100%"}
                     height={"100%"}
@@ -78,25 +67,16 @@ const MapContainer = (props) => {
                     ))}
                 </Map>
             </YMaps>
-            {markerData.showCard &&(
-              <AttractionCard
-                marker={markerData.marker}
-                changeMarker = {changeMarker}
-              />
-            )}
-              
+            
+            {markers.length && (<Route path="/map/:markerId">
+              <AttractionCard markers={markers}/>
+            </Route>)}   
+          
+                                
         </div>
 
     )
 }
 
-const mapStateToProps = store => ({
-  markers: store.markersReducer.markers,
-  categories: store.categoriesReducer.categories
-})
 
-const mapDispatchToProps = dispatch => ({
-  fetchMapMarkers: () => dispatch(fetchMapMarkers())
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(MapContainer);
+export default MapContainer;

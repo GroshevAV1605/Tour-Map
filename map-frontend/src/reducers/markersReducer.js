@@ -7,6 +7,7 @@ import {
 
 const initialState = {
     pending: false,
+    error: null,
     markers: [],
     userMarkers: []
 }
@@ -16,12 +17,14 @@ const markersReducer = (state=initialState, action) => {
         case FETCH_MARKERS_PENDING:
             return{
                 ...state,
-                pending: true
+                pending: true,
+                error: null
             }
         case FETCH_MARKERS_ERROR:
             return{
                 ...state,
-                pending: false
+                pending: false,
+                error: action.payload
             }
         case FETCH_MARKERS_SUCCESS:            
             return{

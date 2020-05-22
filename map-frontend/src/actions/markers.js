@@ -21,8 +21,9 @@ export const fetchMarkersPending = () => ({
     type: FETCH_MARKERS_PENDING
 })
 
-export const fetchMarkersError = () => ({
-    type: FETCH_MARKERS_ERROR
+export const fetchMarkersError = (err) => ({
+    type: FETCH_MARKERS_ERROR,
+    payload: err
 })
 
 export const fetchUserMarkers = userId => {
@@ -35,7 +36,7 @@ export const fetchUserMarkers = userId => {
                 dispatch(fetchUserMarkersSuccess(userMarker));
             })
             .catch(err => {
-                dispatch(fetchMarkersError());
+                dispatch(fetchMarkersError(err));
             })
     }
 }
@@ -49,6 +50,6 @@ export const fetchMapMarkers = () => {
                 console.log(res);
                 dispatch(fetchMarkersSuccess(res.data));
             })
-            .catch(err => dispatch(fetchMarkersError()));
+            .catch(err => dispatch(fetchMarkersError(err)));
     }
 }
