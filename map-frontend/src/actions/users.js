@@ -1,8 +1,15 @@
-import {REGISTER_FAILURE, REGISTER_SUCCESS, REGISTER_REQUEST} from '../constants/users';
-import {AUTH_SUCCESS, AUTH_STAYON, AUTH_LOGOUT, AUTH_ERROR, AUTH_PENDING} from '../constants/users';
+import {
+    AUTH_SUCCESS, 
+    AUTH_STAYON, 
+    AUTH_LOGOUT, 
+    AUTH_ERROR, 
+    AUTH_PENDING, 
+    USER_CHANGE_NAME,
+    USER_CHANGE_AVATAR} from '../constants/users';
 import {AlertClear, AlertError, AlertSuccess} from './alertActions';
 import axios from 'axios';
 import { history } from '../utils/history';
+import { toast } from 'react-toastify';
 
 
 export const authSuccess = (user) => ({
@@ -25,6 +32,16 @@ export const authPending = () => ({
 
 export const authError = () => ({
     type: AUTH_ERROR
+})
+
+export const userChangeName = (newName) => ({
+    type: USER_CHANGE_NAME,
+    payload: newName
+})
+
+export const userChangeAvatar = (newPhoto) => ({
+    type: USER_CHANGE_AVATAR,
+    payload: newPhoto
 })
 
 export const register = user => {
@@ -66,9 +83,7 @@ export const auth = user => {
     }
 }
 
-export const getById = id => {
-    console.log("ID from action: " + id);
-    
+export const getById = id => {    
     authPending();
     return dispatch => {
         axios.get("http://localhost:5000/users/getById/" + id)
@@ -81,3 +96,41 @@ export const getById = id => {
             })
     }
 }
+
+export const changeName = (newName, id) => {
+    console.log(id);
+    return dispatch => {
+        axios.post("http://localhost:5000/users/changeName", {newName, id})
+            .then(() => {
+                dispatch(userChangeName(newName));
+                toast.success("Имя успешно изменено!");        
+            })
+            .catch(err => {
+                toast.error(err.toString());
+            })
+    }
+}
+
+export const changeAvatar = (newPhoto, id) => {
+    return dispatch => {
+        
+        const formData = new FormData();
+        formData.append('imagefile', newPhoto);
+        formData.append('id', id);
+        
+        axios.post("http://localhost:5000/users/changeAvatar", formData, {
+            headers: {
+                'Content-Type':'multipart/form-data'
+            }
+        })
+        .then((res) => {       
+            dispatch(userChangeAvatar(res.data.imgSrc, id));
+            toast.success("Аватар успешно изменен!");
+        })
+        .catch(err => {
+            toast.error(err.toString());
+        })
+    }
+    
+}
+

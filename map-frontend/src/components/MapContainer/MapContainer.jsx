@@ -3,7 +3,7 @@ import { YMaps, Map, ZoomControl, Placemark } from "react-yandex-maps";
 
 import styles from './MapContainer.module.css';
 import AttractionCard from '../AttractionCard/AttractionCard';
-
+import { connect } from 'react-redux';
 const MapContainer = () => {
     return (
         <div style={{ position: "relative", width: "100%", height: "100%" }}>
@@ -32,4 +32,8 @@ const MapContainer = () => {
     )
 }
 
-export default MapContainer;
+const mapStateToProps = store => ({
+  markers: store.markersReducer.markers
+})
+
+export default connect(mapStateToProps)(MapContainer);

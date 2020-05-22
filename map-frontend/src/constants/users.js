@@ -12,3 +12,5 @@ export const AUTH_LOGOUT = 'AUTH_LOGOUT';
 
 export const AUTH_PENDING = 'AUTH_PENDING';
 export const AUTH_ERROR = 'AUTH_ERROR';
+export const USER_CHANGE_NAME = 'USER_CHANGE_NAME';
+export const USER_CHANGE_AVATAR = 'USER_CHANGE_AVATAR';

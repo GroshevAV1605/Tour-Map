@@ -130,11 +130,11 @@ const AddMarkerPage = (props) => {
                             <Form.Row>
                                 <Form.Group as={Col}>
                                     <Form.Label>Заголовок</Form.Label>
-                                    <Field type="text" placeholder="Введите заголовок" name="title" className="form-control" required/>
+                                    <Field type="text" maxLength={50} placeholder="Введите заголовок" name="title" className="form-control" required/>
                                 </Form.Group>
                                 <Form.Group as={Col}>
                                     <Form.Label>Заголовок (англ)</Form.Label>
-                                    <Field type="text" placeholder="Введите заголовок" name="title_en" className="form-control"/>
+                                    <Field type="text" maxLength={50} placeholder="Введите заголовок (англ.)" name="title_en" className="form-control"/>
                                 </Form.Group>
                                 <Form.Group as={Col}>
                                     <Form.Label>Категория</Form.Label>
@@ -198,11 +198,6 @@ const AddMarkerPage = (props) => {
                                     <Form.Label>Изображения:</Form.Label>
                                 </Col>
                                 <Col md={5}>
-                                    {/*
-                                    <Form.File style={{marginBottom:"5px"}} label="image1.jpg" custom />
-                                    <Form.File style={{marginBottom:"5px"}} label="image2.jpg" custom/>
-                                    <Form.File style={{marginBottom:"5px"}} label="image3.jpg" custom/>
-                                    <Button variant="secondary"> + </Button>*/}
                                     {state.files.map((file, i) => (
                                         <Row key={i} style={{marginBottom:"10px"}}>
                                             <Col md={10}>

@@ -111,9 +111,9 @@ const AuthPage = (props) => {
                         <Formik 
                         initialValues={initialValues.registrationData}
                         validationSchema={Yup.object().shape({
-                            login: Yup.string().required('Заполните поле логин!').min(8, "Короткий логин!"),
+                            login: Yup.string().required('Заполните поле логин!').min(8, "Короткий логин!").max(50, "Слишком длинный логин!"),
                             email: Yup.string().email("Некорректный email!"),
-                            username: Yup.string().required('Введите имя!'),
+                            username: Yup.string().required('Введите имя!').max(50, "Слишком длинное имя!"),
                             password: Yup.string().required('Введите пароль!')
                             .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/, 'Пароль должен состоять не меньше чем из 8 символов, содержать цифры, строчные и заглавные латинские буквы'),
                             password_rep: Yup.string()

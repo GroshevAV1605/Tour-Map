@@ -1,6 +1,7 @@
 const uuidv4 = require('uuid').v4; 
 const router = require('express').Router();
 const db = require('../db');
+const path = require('path');
 let crypto = require('crypto');
 
 router.post("/", (req, res) => {
@@ -66,6 +67,42 @@ router.get("/getById/:id", (req, res) => {
             res.status(400).json("Error:" + err);
             return false;
         })
+})
+
+router.post("/changeName", (req, res) => {
+    let {body} = req;
+    
+    db.none('UPDATE map_user SET name=$1 WHERE id=$2', [body.newName, body.id])
+        .then(() => res.json("OK"))
+        .catch(err => res.status(400).json("Error: " + err));
+})
+
+router.post("/changePass", (req, res) => {
+    let {body} = req;
+    let salt = crypto.randomBytes(16).toString('hex')
+    let password_hash = crypto.pbkdf2Sync(body.password, salt, 1000, 64, 'sha512').toString('hex');
+
+    db.none('UPDATE map_user SET password_hash=$1, salt=$2 WHERE id=$3', [password_hash, salt, body.id])
+        .then(() => res.json("OK"))
+        .catch(err => res.status(400).json("Error: " + err))
+})
+
+router.post("/changeAvatar", (req, res) => {
+    let {body} = req;
+    let img = req.files.imagefile;
+    img.mv(path.join(__dirname, `../media/userpicks/${body.id}/${img.name}`), err => {
+        if(err){
+            console.log(err);
+            return res.status(400).json("Error: " + err);
+        }
+    })
+
+    let imgSrc = process.env.PUBLIC_URL + `/userpicks/${body.id}/${img.name}`;
+
+    db.none('UPDATE map_user SET photo=$1 where id=$2', [imgSrc, body.id])
+        .then(() => {res.json({imgSrc})})
+        .catch(err => res.status(400).json("Error: " + err))
+
 })
 
 module.exports = router;
