@@ -70,8 +70,8 @@ const MapContainer = (props) => {
                       defaultGeometry={[marker.latitude, marker.longitude]}
                       properties={{hintContent: marker.title}}
                       options={{
-                        preset: marker.preset,
-                        iconColor: marker.color
+                        preset: marker.preset.trim(),
+                        iconColor: marker.color.trim()
                       }}
                       onClick={() => onMarkerClick(marker)}
                     />
