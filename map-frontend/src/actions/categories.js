@@ -19,7 +19,7 @@ export const fetchCategories = () => {
     
     return dispatch => {
         dispatch(fetchCategoriesPending());
-        axios.get("http://localhost:5000/categories")
+        axios.get("https://tour-map-api.herokuapp.com/categories")
             .then(res => {
                 console.log(res);
                 if(res.error){

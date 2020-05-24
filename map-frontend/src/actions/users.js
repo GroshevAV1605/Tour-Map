@@ -48,7 +48,7 @@ export const register = user => {
     
     return dispatch => {
         
-        axios.post("http://localhost:5000/users", JSON.stringify(user), { headers: {'Content-Type': 'application/json'}})
+        axios.post("https://tour-map-api.herokuapp.com/users", JSON.stringify(user), { headers: {'Content-Type': 'application/json'}})
             .then(user => {             
                 dispatch(AlertSuccess("Вы успешно зарегистрировались"))
                 dispatch(AlertClear());
@@ -63,7 +63,7 @@ export const register = user => {
 export const auth = user => {
     return dispatch => {
         
-        axios.post("http://localhost:5000/users/auth", JSON.stringify(user), {headers:{'Content-Type':'application/json'}})
+        axios.post("https://tour-map-api.herokuapp.com/users/auth", JSON.stringify(user), {headers:{'Content-Type':'application/json'}})
             .then(retUser => {
                 if(user.stayOn){
                     localStorage.setItem('user', JSON.stringify(retUser.data.id));
@@ -86,7 +86,7 @@ export const auth = user => {
 export const getById = id => {    
     authPending();
     return dispatch => {
-        axios.get("http://localhost:5000/users/getById/" + id)
+        axios.get("https://tour-map-api.herokuapp.com/users/getById/" + id)
             .then(res => {
                 dispatch(authSuccess(res.data));
             })
@@ -99,7 +99,7 @@ export const getById = id => {
 export const changeName = (newName, id) => {
     console.log(id);
     return dispatch => {
-        axios.post("http://localhost:5000/users/changeName", {newName, id})
+        axios.post("https://tour-map-api.herokuapp.com/users/changeName", {newName, id})
             .then(() => {
                 dispatch(userChangeName(newName));
                 toast.success("Имя успешно изменено!");        
@@ -117,7 +117,7 @@ export const changeAvatar = (newPhoto, id) => {
         formData.append('imagefile', newPhoto);
         formData.append('id', id);
         
-        axios.post("http://localhost:5000/users/changeAvatar", formData, {
+        axios.post("https://tour-map-api.herokuapp.com/users/changeAvatar", formData, {
             headers: {
                 'Content-Type':'multipart/form-data'
             }

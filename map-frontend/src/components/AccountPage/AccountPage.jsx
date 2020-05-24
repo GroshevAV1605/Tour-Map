@@ -154,7 +154,7 @@ const PassChangeModal = props => {
 
     const submitPassChange = values => {
         console.log(values);
-        axios.post("http://localhost:5000/users/changePass", {password: values.password, id: props.userID})
+        axios.post("https://tour-map-api.herokuapp.com/users/changePass", {password: values.password, id: props.userID})
             .then(() => toast.success("Пароль успешно изменен!"))
             .catch((err) => toast.error(err.toString()))
         props.onHide();

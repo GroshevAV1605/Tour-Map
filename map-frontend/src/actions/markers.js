@@ -36,7 +36,7 @@ export const fetchDeleteMarker = id => ({
 export const deleteMarker = id => {
     return dispatch => {
         dispatch(fetchMarkersPending());
-        axios.get("http://localhost:5000/markers/deleteMarker/" + id)
+        axios.get("https://tour-map-api.herokuapp.com/markers/deleteMarker/" + id)
             .then(res => {
                 toast.success("Метка удалено!")
                 dispatch(fetchDeleteMarker(id))
@@ -52,7 +52,7 @@ export const fetchUserMarkers = userId => {
     
     return dispatch => {
         dispatch(fetchMarkersPending());
-        axios.get("http://localhost:5000/markers/userMarkers/" + userId)
+        axios.get("https://tour-map-api.herokuapp.com/markers/userMarkers/" + userId)
             .then(res => {
                 let userMarker = res.data;
                 dispatch(fetchUserMarkersSuccess(userMarker));
@@ -67,7 +67,7 @@ export const fetchMapMarkers = () => {
     
     return dispatch => {
         dispatch(fetchMarkersPending());
-        axios.get('http://localhost:5000/markers')
+        axios.get('https://tour-map-api.herokuapp.com/markers')
             .then(res => {
                 console.log(res);
                 dispatch(fetchMarkersSuccess(res.data));

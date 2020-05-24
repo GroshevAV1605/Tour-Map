@@ -28,7 +28,7 @@ export const fetchNewCommentSuccess = (comment) => ({
 export const fetchMarkerComments = id =>{
     return dispatch => {
         dispatch(fetchCommentsPending())
-        axios.get('http://localhost:5000/markers/markerComments/'+id)
+        axios.get('https://tour-map-api.herokuapp.com/markers/markerComments/'+id)
             .then(res => {
                 dispatch(fetchCommentsSuccess(res.data));
             })
@@ -39,7 +39,7 @@ export const fetchMarkerComments = id =>{
 export const addComment = (comment) => {
     return dispatch => {
         dispatch(fetchCommentsPending())
-        axios.post('http://localhost:5000/markers/newComment', JSON.stringify(comment), {headers:{'Content-Type':'application/json'}})
+        axios.post('https://tour-map-api.herokuapp.com/markers/newComment', JSON.stringify(comment), {headers:{'Content-Type':'application/json'}})
             .then(res => {
                 dispatch(fetchCommentsSuccess(res.data));
             })

@@ -119,6 +119,7 @@ const RatingTab = props => {
 
               </Form>
             </React.Fragment>)}
+            <h6 style={{fontSize:"27px", marginRight:"30px"}}>Все отзывы:</h6>
             {props.comments.map((comment, i) => {
               let date = new Date(comment.com_date);
               console.log(date);
