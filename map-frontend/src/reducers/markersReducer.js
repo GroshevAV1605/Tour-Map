@@ -2,7 +2,8 @@ import {
     FETCH_MARKERS_PENDING,
     FETCH_MARKERS_SUCCESS,
     FETCH_MARKERS_ERROR,
-    FETCH_USER_MARKERS_SUCCESS
+    FETCH_USER_MARKERS_SUCCESS,
+    DELETE_MARKER_SUCCESS
 } from '../constants/markers';
 
 const initialState = {
@@ -37,6 +38,13 @@ const markersReducer = (state=initialState, action) => {
                 ...state,
                 pending:false,
                 userMarkers: action.payload
+            }
+        case DELETE_MARKER_SUCCESS:
+            return{
+                ...state,
+                pending:false,
+                markers: state.markers.filter(m => m.id !== action.payload),
+                userMarkers: state.userMarkers.filter(m => m.id !== action.payload)
             }
         default:
             return state;

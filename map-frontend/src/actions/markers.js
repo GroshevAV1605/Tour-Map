@@ -4,8 +4,10 @@ import {
     FETCH_USER_MARKERS_SUCCESS, 
     FETCH_MARKERS_SUCCESS, 
     FETCH_MARKERS_ERROR, 
-    FETCH_MARKERS_PENDING
+    FETCH_MARKERS_PENDING,
+    DELETE_MARKER_SUCCESS
 } from '../constants/markers';
+import { toast } from 'react-toastify';
 
 export const fetchUserMarkersSuccess = userMarkers => ({
     type: FETCH_USER_MARKERS_SUCCESS,
@@ -25,6 +27,26 @@ export const fetchMarkersError = (err) => ({
     type: FETCH_MARKERS_ERROR,
     payload: err
 })
+
+export const fetchDeleteMarker = id => ({
+    type:DELETE_MARKER_SUCCESS,
+    payload:id
+})
+
+export const deleteMarker = id => {
+    return dispatch => {
+        dispatch(fetchMarkersPending());
+        axios.get("http://localhost:5000/markers/deleteMarker/" + id)
+            .then(res => {
+                toast.success("Метка удалено!")
+                dispatch(fetchDeleteMarker(id))
+            })
+            .catch(err => {
+                dispatch(fetchMarkersError(err));
+                toast.error("Ошибка при удалении: " + err)
+            })
+    }
+}
 
 export const fetchUserMarkers = userId => {
     

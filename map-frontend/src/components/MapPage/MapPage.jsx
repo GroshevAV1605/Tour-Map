@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import styles from './MapPage.module.css';
 import Navigation from '../Navigation/Navigation';
@@ -10,12 +10,9 @@ import {connect} from 'react-redux';
 import { toast } from 'react-toastify';
 
 const MapPage = (props) => {
+    const [selectedCats, setSelectedCats] = useState([]);
 
-    useEffect(()=>{
-        console.log("useEffect:  ");
-        console.log(props);
-        
-        
+    useEffect(()=>{       
         props.fetchCategories();
         props.fetchMapMarkers();
     }, [])
@@ -29,15 +26,14 @@ const MapPage = (props) => {
     if(props.loading){
         return <h3>Loading...</h3>
     }
-    console.log(props);
     
     return (
         <div className={styles.mainDiv}>
             <div className={styles.nav}>
-                <Navigation categories={props.categories}/>
+                <Navigation categories={props.categories} _selectedCats={{selectedCats, setSelectedCats}} />
             </div>
             <div className={styles.content}>
-                <MapContainer categories={props.categories} markers={props.markers}/>
+                <MapContainer categories={props.categories} markers={props.markers} selectedCats={selectedCats}/>
             </div>
         </div>
     )

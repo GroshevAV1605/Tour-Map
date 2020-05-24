@@ -53,7 +53,7 @@ const MapContainer = (props) => {
                     instanceRef={mapEl}
                 >
                   <ZoomControl/>
-                  {markers.map(marker => (
+                  {markers.filter(m => props.selectedCats.includes(m.category_id)).map(marker => (
                     <Placemark
                       key = {marker.id}
                       defaultGeometry={[marker.latitude, marker.longitude]}

@@ -7,12 +7,13 @@ import star_full from "../../assets/star-full.png";
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import {history} from '../../utils/history';
+import {fetchMarkerComments, addComment} from '../../actions/comments';
+import {toast} from 'react-toastify'
 
 const AttractionCard = (props) => {
   let [isDescr, setIsDescr] = useState(true);
   let {markerId} = useParams();
   let marker = props.markers.find(mrkr => mrkr.id===markerId);
-  console.log(props.markers);
   
   return (
       <Container className={styles.card} style={{"--color":marker.color.trim(), padding:"0px"}}>
@@ -33,26 +34,23 @@ const AttractionCard = (props) => {
         {isDescr ? (
           <DescriptionTab marker={marker}/>
         ):(
-          <RatingTab marker={marker}/>
+          <RatingTabContainer marker={marker}/>
         )}
       </Container>
   )
 }
 
 const DescriptionTab = props => {
+  
   return(
     <Row style={{overflow:"hidden"}}>
         <Col md={4} style={{overflowY:'scroll', position:"absolute", top:"135px", bottom:"10px", left:"0"}}>
           {props.marker.images.map((image, i) => (
             <Image fluid rounded src={image} style={{marginTop:"10px", cursor:"pointer"}}/>
           ))}
-          <Image fluid rounded src='https://bipbap.ru/wp-content/uploads/2017/10/0_8eb56_842bba74_XL-640x400.jpg' style={{marginTop:"10px", cursor:"pointer"}}/>
-          <Image fluid rounded src='https://bipbap.ru/wp-content/uploads/2017/10/0_8eb56_842bba74_XL-640x400.jpg' style={{marginTop:"10px", cursor:"pointer"}}/>
-          <Image fluid rounded src='https://bipbap.ru/wp-content/uploads/2017/10/0_8eb56_842bba74_XL-640x400.jpg' style={{marginTop:"10px", cursor:"pointer"}}/>
-          <Image fluid rounded src='https://bipbap.ru/wp-content/uploads/2017/10/0_8eb56_842bba74_XL-640x400.jpg' style={{marginTop:"10px", cursor:"pointer"}}/>
-        </Col>
+          </Col>
         <Col md={8} style={{overflowY:'scroll', position:"absolute", top:"135px", bottom:"10px", right:"0"}}>
-          {props.marker.description.split("\\n").map((par, i) => (
+          {props.marker.description.split("\n").map((par, i) => (
             <p key={i}>{par}</p>
           ))}
         </Col>
@@ -61,196 +59,104 @@ const DescriptionTab = props => {
 }
 
 const RatingTab = props => {
-  return(
-    <p>RatingTab</p>
-  )
-}
 
-export default AttractionCard;
+  const [userReview, setUserReview] = useState({
+    rating: 5,
+    comment: ""
+  })
 
-/*const AttractionCard = ({marker, changeMarker}) => {
-  const [media, mediaChange] = useState({type:"", url:""});
-  console.log(marker);
+  useEffect(() => {
+    props.fetchMarkerComments(props.marker.id);
+  }, [])
+
+  const sendComment = () => {
+    userReview.marker_id = props.marker.id;
+    userReview.user_id = props.user.id;
+    props.addComment(userReview);
+  }
+
+   
+
+  if(props.error){
+    toast.error(props.error.toString());
+    return null;
+  }
+
+  if(props.pending){
+    return (
+      <h2 style={{color:'grey'}}>Loading...</h2>
+    )
+  }
+  console.log(props.comments);
+  const rating = props.comments.reduce((acc, cur) => acc+cur.grade, 0);
   
   return(
-    <div className={styles.card} style={{"--color":marker.color}}>
-      <div className = {styles.cardHeader}>
-        {media.url ? (
-          <button className={`${styles.backButton} ${styles.cardButton}`} onClick={() => mediaChange({ type: "", url: "" })} className={styles.leftArrow}><i></i>Назад</button>
-        ):(
-        <h2>{marker.title}</h2>
-        )}
-        <button className={`${styles.closeButton} ${styles.cardButton}`} onClick = {() => changeMarker({marker:"", showCard:false})}>
-          <a className={styles.close}></a>
-        </button>
-      </div>
-      <CardContent
-        media={media}
-        marker={marker}
-        mediaChange={mediaChange}
-      />
-    </div>
+    <Container style={{overflow:"scroll"}}>
+          <Row style={{marginBottom:"30px", marginLeft:"5px", marginTop:"10px"}}>
+              <h6 style={{fontSize:"27px", marginRight:"30px"}}>Рейтинг:</h6>
+              {!rating ? (<h6 style={{fontSize:"24px", marginLeft:"30px"}}>Нет оценок</h6>):(<Rating initialRating={rating} readonly
+                emptySymbol={<img src={star_empty} className="icon" />}
+                fullSymbol={<img src={star_full} className="icon" />}
+            />)}
+          </Row>
+          { props.user && props.comments.every(comm => props.user.id!==comm.user_id) && (
+            <React.Fragment>
+              <h6 style={{fontSize:"27px", marginRight:"30px"}}>Оставить отзыв:</h6>
+              <p style={{fontSize:"1rem", marginBottom:"0px", fontWeight:"400", color:"#212529"}}>Ваша оценка:</p>
+              <Rating initialRating={userReview.rating}
+                emptySymbol={<img src={star_empty} className="icon" />}
+                fullSymbol={<img src={star_full} className="icon" />}
+                onChange={(rating)=> setUserReview({...userReview, rating})}
+              />
+              <Form>
+                  <Row style={{marginBottom:"10px", marginTop:"5px"}}>
+                  <Col>
+                    <Form.Label>Коментарий (необязательно):</Form.Label>
+                    <Form.Control as="textarea" rows="3" value={userReview.comment} onChange={(e)=> setUserReview({...userReview, comment:e.target.value})}/>
+                </Col>
+                  </Row>
+                    <Button variant="success" onClick={sendComment}>Оставить отзыв</Button>
+
+              </Form>
+            </React.Fragment>)}
+            {props.comments.map((comment, i) => {
+              let date = new Date(comment.com_date);
+              console.log(date);
+              
+              return(
+              <Row key={i}>
+                <Col md={2}>
+                  <Image style={{marginTop: "30px", padding:"0px 18px"}} fluid rounded src={comment.photo}/>
+                </Col>
+                <Col md={10}>
+                  <Row style={{marginTop: "30px"}}>
+                    <b>{comment.name.trim()}</b>
+                  </Row>
+                  <Row style={{marginTop: "10px"}}>
+                    <p>{comment.comment_text}</p>
+                  </Row>
+                  <Row>
+                    <b>Дата: {date.getDay()}/{date.getMonth()}/{date.getFullYear()}</b>
+                  </Row>
+                </Col>
+              </Row>
+            )})}
+      </Container>
   )
 }
 
-const CardContent = ({media, marker, mediaChange}) => {
-  return media.url ? (
-    <div className={styles.mediaContainer}>
-      <img src={media.url}></img>
-    </div>
-  ):(
-    <div className={styles.CardContent}>
-      <div className={styles.mediaMenu}>
-        {marker.images.map((img, i) => (
-          <div className={styles.imageContainer}
-            onClick={() => mediaChange({type:"img", url:img})} key={i}>
-              <img className={styles.imgPrevew} src={img}/>
-            </div>
-        ))}
-      </div>
-      <div className={styles.description}>
-          {marker.description.split("\\n").map((par, i) => (
-            <p key={i}>{par}</p>
-          ))}
-      </div>
-    </div>
-  )
-}/*
+const mapStateToProps = store => ({
+  comments: store.commentsReducer.comments,
+  pending: store.commentsReducer.pending,
+  error: store.commentsReducer.error,
+  user: store.usersReducer.user,
+})
 
-/*const AttractionCard = ({marker, changeMarker}) => {
-  const [media, mediaChange] = useState({type:"", url:""});
+const mapDispatchToProps = dispatch => ({
+  fetchMarkerComments: (id) => dispatch(fetchMarkerComments(id)),
+  addComment: (comment) => dispatch(addComment(comment))
+})
 
-  return (
-    <div className={styles.card} style={{ "--color": "#01d4cd" }}>
-      <div className={styles.cardHeader}>
-        
-        <h2>Оренбургский областной музей изобразительных искусств</h2>
-        <button
-          className={`${styles.closeButton} ${styles.cardButton}`}
-        >
-          <a className={styles.close}></a>
-        </button>
-      </div>
-      <Container style={{overflow:"hidden"}}>
-          <Row style={{marginBottom:"30px"}}>
-              <h6 style={{fontSize:"27px", marginRight:"30px"}}>Рейтинг:</h6>
-              <Rating initialRating={4.35}
-                emptySymbol={<img src={star_empty} className="icon" />}
-                fullSymbol={<img src={star_full} className="icon" />}
-            />
-          </Row>
-          <Row style={{marginBottom:"30px"}}>
-              <h6 style={{fontSize:"27px", marginRight:"30px"}}>Ваша оценка:</h6>
-              <Rating initialRating={4.35}
-                emptySymbol={<img src={star_empty} className="icon" />}
-                fullSymbol={<img src={star_full} className="icon" />}
-            />
-          </Row>
-          <Row style={{marginBottom:"30px"}}>
-            <h6 style={{fontSize:"27px", marginRight:"30px"}}>Отзывы:</h6>
-          </Row>
-          <Form>
-              <Row style={{marginBottom:"10px"}}>
-              <Col>
-                <Form.Label>Оставить коментарий:</Form.Label>
-                <Form.Control as="textarea" rows="3"/>
-            </Col>
-              </Row>
-                <Button variant="success">Оставить коментарий</Button>
-            
-          </Form>
-          <Row>
-              <Col md={2}>
-                <Image style={{marginTop: "30px", padding:"0px 18px"}} fluid rounded src="https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"/>
+const RatingTabContainer = connect(mapStateToProps, mapDispatchToProps)(RatingTab);
 
-              </Col>
-              <Col md={10}>
-                <Row style={{marginTop: "30px"}}>
-                    <b>Test testov 2</b>
-                </Row>
-                <Row style={{marginTop: "10px"}}>
-                    <p>Посещение музея изобразительных искусств, это отрыв от нашей действительности  от башенного ритма нашей жизни. Время там остановилось, вы можете побродить в тишине и спокойствие и насладиться прекрасными произведениями.</p>
-                </Row>
-                <Row>
-                    <b>Дата: 6/05/2020</b>
-                </Row>
-              </Col>
-          </Row>
-          <Row>
-              <Col md={2}>
-                <Image style={{marginTop: "30px", padding:"0px 18px"}} fluid rounded src="https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"/>
-
-              </Col>
-              <Col md={10}>
-                <Row style={{marginTop: "30px"}}>
-                    <b>Test testov 123</b>
-                </Row>
-                <Row style={{marginTop: "10px"}}>
-                    <p>Неживое место. Скука и тишина. Такое ощущение, что время застыло в Оренбурге. Зато здание музея выглядит отлично. Желаю чтобы Оренбург был также уходен.</p>
-                </Row>
-                <Row>
-                    <b>Дата: 6/05/2020</b>
-                </Row>
-              </Col>
-          </Row>
-
-      </Container>
-    </div>
-  );
-};
-
-const CardContent = () => {
-
-  let description = "Оренбургский областной музей изобразительных искусств основан в 1960 году, открыт в 1961 году. Музей находится в здании, построенном в начале XIX века по проекту архитектора Михайло Малахова для Городской Думы.\\nОсновой коллекции музея стало собрание произведений академика живописи, одного из интереснейших представителей позднего передвижничества Лукиана Васильевича Попова (1873—1914), работавшего в Оренбурге в конце XIX – начале XX века.\\nВ собрании музея хранятся произведения древнерусского, русского, советского и западноевропейского искусства, начиная с конца XVI века до наших дней, в том числе живопись, графика, скульптура, декоративно-прикладное искусство.\\nРусское искусство XIX века представлено различными жанрами, в основном, пейзажем. Среди работ произведения И. К. Айвазовского, Л. Ф. Лагорио, А. К. Саврасова, Н. Н. Дубовского, В. Е. Маковского, В. Д. Поленова, Ф. А. Малявина и других.";
-  return (
-    <div className={styles.cardContent}>
-      <div className={styles.mediaMenu}>
-          <div
-            className={styles.imageContainer}
-          >
-            <img
-              className={styles.imgPrevew}
-              src={`https://img.youtube.com/vi/NZVTAVz44xE/0.jpg`}
-            />
-            <img
-              height="50px"
-              width="50px"
-              className={styles.playIcon}
-              src="https://image.flaticon.com/icons/png/512/0/375.png"
-            ></img>
-          </div>
-          <div
-            className={styles.imageContainer}
-          >
-            <img className={styles.imgPrevew} src="https://b1.culture.ru/c/340878.jpg" />
-          </div>
-          <div
-            className={styles.imageContainer}
-          >
-            <img className={styles.imgPrevew} src="http://omizo.ru/assets/galleries/750/9.jpg" />
-          </div>
-          <div
-            className={styles.imageContainer}
-          >
-            <img className={styles.imgPrevew} src="http://omizo.ru/assets/galleries/611/18.jpg" />
-          </div>
-      </div>
-      <div className={styles.description}>
-          <Row style={{marginBottom:"15px"}}>
-              <Col md={{span:1, offset:8}}>
-                <a style={{fontSize:"20px", color:"#65bd6b", textDecoration:"underline", marginTop:"15px", lineHeight:"40px"}} href="#">Отзывы</a>
-              </Col>
-              <Col md={3}>
-              <Rating initialRating={4.35}
-                                                    emptySymbol={<img src={star_empty} className="icon" />}
-                                                    fullSymbol={<img src={star_full} className="icon" />}
-                                                />
-              </Col>
-          </Row>
-        {description.split("\\n").map((par, i) => (
-          <p key={i}>{par}</p>
-        ))}
-      </div>
-    </div>
-  );
-};*/
+export default AttractionCard;

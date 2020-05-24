@@ -15,6 +15,13 @@ router.get("/:category", (req, res) => {
         .catch(err => res.status(400).json("Error: " + err))
 })
 
+router.get("/deleteMarker/:id", (req, res) => {
+    let {id} = req.params;
+    db.none("DELETE FROM marker WHERE id=$1", [id])
+        .then(res.json("OK"))
+        .catch(err => res.status(400).json("Error: " + err))
+})
+
 router.get("/userMarkers/:id", (req, res) => {
     let {id} = req.params;
     
@@ -28,6 +35,29 @@ router.get("/userMarkers/:id", (req, res) => {
 router.get("/", (req, res) => {
     db.any("SELECT * FROM marker")
         .then(data => res.json(data))
+        .catch(err => res.status(400).json("Error: " + err))
+})
+
+router.get("/markerComments/:id", (req, res) => {
+    let {id} = req.params;
+    db.any("SELECT u.name, u.photo, c.id, c.comment_text, c.grade, c.com_date, c.marker_id, c.user_id, c.images FROM map_user u, comment c WHERE c.user_id=u.id AND c.marker_id=$1", [id])
+        .then(data => {
+            res.json(data);
+        })
+        .catch(err => res.status(400).json("Error: " + err))
+})
+
+router.post("/newComment", (req, res) => {
+    let {body} = req;
+    body.com_date = Date.now() / 1000.0;
+    db.none("INSERT INTO comment(comment_text, grade, com_date, marker_id, user_id) VALUES (${comment}, ${rating}, to_timestamp(${com_date}), ${marker_id}, ${user_id})", body)
+        .then(() => {
+            db.any("SELECT u.name, u.photo, c.id, c.comment_text, c.grade, c.com_date, c.marker_id, c.user_id, c.images FROM map_user u, comment c WHERE c.user_id=u.id AND c.marker_id=$1", [body.marker_id])
+                .then(data => {
+                    res.json(data);
+                })
+                .catch(err => res.status(400).json("Error: " + err))
+        })
         .catch(err => res.status(400).json("Error: " + err))
 })
 

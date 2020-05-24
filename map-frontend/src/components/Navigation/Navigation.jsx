@@ -12,6 +12,7 @@ const Navigation = (props) => {
                 <CategoryButton
                     key={category.id}
                     category={category}
+                    _selectedCats={props._selectedCats}
                 />
             ))}
         </div>

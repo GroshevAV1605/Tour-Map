@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Container, Row, Col, Image, Button, ListGroup, Modal, Popover, Form, OverlayTrigger} from 'react-bootstrap';
 import Rating from 'react-rating';
 import { connect } from 'react-redux';
-import {fetchUserMarkers} from '../../actions/markers';
+import {fetchUserMarkers, deleteMarker} from '../../actions/markers';
 import styles from './AccountPage.module.css';
 import star_empty from "../../assets/star-empty.png";
 import star_full from "../../assets/star-full.png";
@@ -19,10 +19,15 @@ const AccountPage = (props) => {
     const [showRename, setShowRename] = useState(false);
     const [showPassChange, setShowPassChange] = useState(false);
     const [showAvatarChange, setShowAvatarChange] = useState(false);
+    const [showDeleteMarker, setShowDeleteMarker] = useState({show:false, id:""});
 
     useEffect(()=>{
         props.fetchUserMarkers(props.user.id);
     },[])
+
+    const onDeleteMarker = (id) => {
+        props.deleteMarker(id);
+    }
         
     return (
         <div className={styles.personal_container}>
@@ -47,10 +52,7 @@ const AccountPage = (props) => {
                                                     <a href="#">{i+1}. {marker.title}</a>
                                                 </Col>
                                                 <Col md={2}>
-                                                    <Button block variant="secondary">Edit</Button>
-                                                </Col>
-                                                <Col md={2}>
-                                                    <Button block variant="danger">X</Button>
+                                                    <Button block variant="danger" onClick={() => setShowDeleteMarker({show: true, id:marker.id})}>X</Button>
                                                 </Col>
                                             </Row>
                                         </ListGroup.Item>
@@ -64,7 +66,35 @@ const AccountPage = (props) => {
             <NameChangeModal show={showRename} onHide={()=>setShowRename(false)} changeName={props.changeName} userID = {props.user.id}/>
             <PassChangeModal show={showPassChange} onHide={()=>setShowPassChange(false)} userID = {props.user.id}/>
             <AvatarChangeModal show={showAvatarChange} onHide={() => setShowAvatarChange(false)} changeAvatar={props.changeAvatar} userID={props.user.id}/>
+            <DeleteMarkerModal show={showDeleteMarker.show} onHide={() => setShowDeleteMarker({show:false, id:""})} onDeleteMarker={() => onDeleteMarker(showDeleteMarker.id) }/>
         </div>
+    )
+}
+
+const DeleteMarkerModal = props => {
+    return(
+        <Modal
+            show={props.show}
+            onHide ={props.onHide}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+        >
+            <Modal.Header closeButton>
+                <Modal.Title>
+                    Удалить метку
+                </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Вы уверены что хотите удалить метку?</Modal.Body>
+            <Modal.Footer>
+                <Button variant="danger" onClick={() => {
+                    props.onDeleteMarker();
+                    props.onHide();
+                    }}>
+                    Удалить
+                </Button>
+            </Modal.Footer>
+        </Modal>
     )
 }
 
@@ -245,7 +275,8 @@ const mapStateToProps = store => ({
 const mapDispatchToProps = dispatch => ({
     fetchUserMarkers: (id) => dispatch(fetchUserMarkers(id)),
     changeName: (newName, id) => dispatch(changeName(newName, id)),
-    changeAvatar: (newPhoto, id) => dispatch(changeAvatar(newPhoto, id))
+    changeAvatar: (newPhoto, id) => dispatch(changeAvatar(newPhoto, id)),
+    deleteMarker: (id) => dispatch(deleteMarker(id))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(AccountPage);
