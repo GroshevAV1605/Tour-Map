@@ -129,11 +129,11 @@ const AddMarkerPage = (props) => {
                             <Form.Row>
                                 <Form.Group as={Col}>
                                     <Form.Label>Заголовок</Form.Label>
-                                    <Field type="text" maxLength={50} placeholder="Введите заголовок" name="title" className="form-control" required/>
+                                    <Field type="text" maxLength={100} placeholder="Введите заголовок" name="title" className="form-control" required/>
                                 </Form.Group>
                                 <Form.Group as={Col}>
                                     <Form.Label>Заголовок (англ)</Form.Label>
-                                    <Field type="text" maxLength={50} placeholder="Введите заголовок (англ.)" name="title_en" className="form-control"/>
+                                    <Field type="text" maxLength={100} placeholder="Введите заголовок (англ.)" name="title_en" className="form-control"/>
                                 </Form.Group>
                                 <Form.Group as={Col}>
                                     <Form.Label>Категория</Form.Label>

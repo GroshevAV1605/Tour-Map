@@ -26,11 +26,8 @@ const App = (props) => {
       
     }
   }, [])
-
-  console.log("fromAPp: "+props.isAuthTryComplete);
   
   return (
-    props.isAuthTryComplete &&(
     <Router history={history}>
       <div>
         <Header/>
@@ -58,7 +55,7 @@ const App = (props) => {
         draggable
         pauseOnHover
       />
-    </Router>)
+    </Router>
     
   )
 
