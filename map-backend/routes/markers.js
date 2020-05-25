@@ -1,8 +1,15 @@
 const uuidv4 = require('uuid').v4; 
 const router = require('express').Router();
+const cloudinary = require('cloudinary');
 const path = require('path');
 const db = require('../db');
 require('dotenv').config();
+
+cloudinary.config({
+    cloud_name: "dfqq2woem",
+    api_key: "728332241127315",
+    api_secret: 'ILVn8IVxNLflAsRgOUcRU0s7K0w'
+})
 
 router.get("/:category", (req, res) => {
     let category;
@@ -74,23 +81,21 @@ router.post("/", (req, res) => {
 
         if(Array.isArray(files)){
             files.map(file => {
-                file.mv(path.join(__dirname, `../media/${ID}/${file.name}`), err => {
-                    if(err) {
-                        console.log(err);
-                        return res.status(500).send(err);
+                cloudinary.v2.uploader.upload(file, {folder:ID}, (error, result) => {
+                    if(error){
+                        return res.status(500).json(error);
                     }
+                    dataToSave.images.push(result.url);
                 })
-                dataToSave.images.push(process.env.PUBLIC_URL+`/${ID}/${file.name}`);
             })
         }
         else{
-            files.mv(path.join(__dirname, `../media/${ID}/${files.name}`), err => {
-                if(err) {
-                    console.log(err);
-                    return res.status(500).send(err);
+            cloudinary.v2.uploader.upload(files, {folder:ID}, (error, result) => {
+                if(error){
+                    return res.status(500).json(error);
                 }
+                dataToSave.images.push(result.url);
             })
-            dataToSave.images.push(process.env.PUBLIC_URL+`/${ID}/${files.name}`);
         }
 
         
