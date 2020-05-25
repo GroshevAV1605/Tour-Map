@@ -81,7 +81,7 @@ router.post("/", (req, res) => {
 
         if(Array.isArray(files)){
             files.map(file => {
-                cloudinary.v2.uploader.upload(file, {folder:ID}, (error, result) => {
+                cloudinary.v2.uploader.upload(file.tempFilePath, {folder:ID}, (error, result) => {
                     if(error){
                         return res.status(500).json(error);
                     }
@@ -93,6 +93,7 @@ router.post("/", (req, res) => {
             cloudinary.v2.uploader.upload(files, {folder:ID}, (error, result) => {
                 if(error){
                     return res.status(500).json(error);
+                    
                 }
                 dataToSave.images.push(result.url);
             })
