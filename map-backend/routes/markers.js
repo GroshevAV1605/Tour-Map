@@ -74,7 +74,8 @@ router.post("/", (req, res) => {
     let dataToSave = Object.assign({}, body);
     dataToSave.id = ID;
     dataToSave.images = [];
-
+    console.log(req.files);
+    
     if(req.files !== null){
 
         let files = req.files.imagefile;
@@ -86,16 +87,21 @@ router.post("/", (req, res) => {
                         return res.status(500).json(error);
                     }
                     dataToSave.images.push(result.url);
+                    db.none('INSERT INTO marker(id, title, title_en, latitude, longitude, description, description_en, images, creator_id, category_id) VALUES (${id}, ${title}, ${title_en}, ${latitude}, ${longitude}, ${description}, ${description_en}, ${images}, ${creator_id}, ${category_id})', dataToSave)
+                        .then(() => res.json("OK"))
+                        .catch(err => res.status(400).json("Error" + err))
                 })
             })
         }
         else{
-            cloudinary.v2.uploader.upload(files, {folder:ID}, (error, result) => {
+            cloudinary.v2.uploader.upload(files.tempFilePath, {folder:ID}, (error, result) => {
                 if(error){
                     return res.status(500).json(error);
-                    
                 }
                 dataToSave.images.push(result.url);
+                db.none('INSERT INTO marker(id, title, title_en, latitude, longitude, description, description_en, images, creator_id, category_id) VALUES (${id}, ${title}, ${title_en}, ${latitude}, ${longitude}, ${description}, ${description_en}, ${images}, ${creator_id}, ${category_id})', dataToSave)
+                    .then(() => res.json("OK"))
+                    .catch(err => res.status(400).json("Error" + err))
             })
         }
 
@@ -105,9 +111,7 @@ router.post("/", (req, res) => {
     console.log(dataToSave);
     
 
-    db.none('INSERT INTO marker(id, title, title_en, latitude, longitude, description, description_en, images, creator_id, category_id) VALUES (${id}, ${title}, ${title_en}, ${latitude}, ${longitude}, ${description}, ${description_en}, ${images}, ${creator_id}, ${category_id})', dataToSave)
-        .then(() => res.json("OK"))
-        .catch(err => res.status(400).json("Error" + err))
+    
 
 })
 

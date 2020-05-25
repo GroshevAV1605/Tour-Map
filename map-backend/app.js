@@ -10,7 +10,7 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded())
-app.use(fileUpload({createParentPath: true}));
+app.use(fileUpload({createParentPath: true, useTempFiles:true}));
 app.use(express.static("media"))
 
 app.get('/', (req, res)=>{
